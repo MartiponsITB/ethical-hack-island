@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom cybersecurity theme colors
+				cyber: {
+					black: '#121212',
+					darkgray: '#1e1e1e',
+					green: '#0cfc83',
+					blue: '#0cdbfc',
+					purple: '#a45ee5',
+					red: '#fc4e03',
+					yellow: '#fcce03'
 				}
 			},
 			borderRadius: {
@@ -84,11 +95,31 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'glow': {
+					'0%, 100%': { 
+						textShadow: '0 0 5px #0cfc83, 0 0 10px #0cfc83'
+					},
+					'50%': { 
+						textShadow: '0 0 20px #0cfc83, 0 0 30px #0cfc83'
+					},
+				},
+				'flicker': {
+					'0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%': {
+						opacity: '0.99',
+						filter: 'drop-shadow(0 0 1px rgba(12, 252, 131, 0.5))'
+					},
+					'20%, 21.999%, 63%, 63.999%, 65%, 69.999%': {
+						opacity: '0.4',
+						filter: 'none'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'glow': 'glow 2s ease-in-out infinite',
+				'flicker': 'flicker 3s linear infinite'
 			}
 		}
 	},
