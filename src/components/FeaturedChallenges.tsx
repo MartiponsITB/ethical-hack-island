@@ -10,14 +10,14 @@ interface ChallengeProps {
   title: string;
   description: string;
   difficulty: "Fàcil" | "Mig" | "Difícil" | "Expert";
-  category: "Xarxes" | "Web" | "Sistemes" | "Forense" | "Criptografia";
+  category: "Xarxes" | "Web" | "Sistemes" | "Forense" | "Criptografia" | "Defensa" | "Exploit" | "Hackaton";
   completions: number;
 }
 
 const challenges: ChallengeProps[] = [
   {
     id: 1,
-    title: "Vulnerabilitat SSH",
+    title: "Repte de Xarxes",
     description: "Descobreix la contrasenya d'administrador explotant una vulnerabilitat en la configuració SSH.",
     difficulty: "Fàcil",
     category: "Xarxes",
@@ -25,7 +25,7 @@ const challenges: ChallengeProps[] = [
   },
   {
     id: 2,
-    title: "Injeccions SQL",
+    title: "Atac SQL",
     description: "Accedeix a una base de dades protegida utilitzant tècniques d'injecció SQL.",
     difficulty: "Mig",
     category: "Web",
@@ -33,11 +33,19 @@ const challenges: ChallengeProps[] = [
   },
   {
     id: 3,
-    title: "Escalada de privilegis",
-    description: "Eleva els teus privilegis d'usuari normal a root en un sistema Linux.",
+    title: "Atac amb Exploit",
+    description: "Eleva els teus privilegis d'usuari normal a root en un sistema Linux utilitzant un exploit.",
     difficulty: "Difícil",
-    category: "Sistemes",
+    category: "Exploit",
     completions: 92
+  },
+  {
+    id: 4,
+    title: "Defensa de Sistemes",
+    description: "Configura un sistema segur i defensa'l contra diferents vectors d'atac.",
+    difficulty: "Mig",
+    category: "Defensa",
+    completions: 156
   }
 ];
 
@@ -53,7 +61,10 @@ const categoryColors = {
   "Web": "bg-purple-600",
   "Sistemes": "bg-cyan-600",
   "Forense": "bg-indigo-600",
-  "Criptografia": "bg-emerald-600"
+  "Criptografia": "bg-emerald-600",
+  "Defensa": "bg-teal-600",
+  "Exploit": "bg-rose-600",
+  "Hackaton": "bg-amber-600"
 };
 
 const FeaturedChallenges = () => {

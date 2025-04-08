@@ -16,7 +16,7 @@ const Hero = () => {
       
       <div className="container relative z-10 mx-auto px-4 text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-          <span className="text-cyber-green cyber-glow">Ethical</span> Hack Island
+          <span className="text-cyber-green cyber-glow">Cyber</span>Challenge
         </h1>
         <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
           Desafia les teves habilitats en ciberseguretat, hacking ètic i administració de sistemes

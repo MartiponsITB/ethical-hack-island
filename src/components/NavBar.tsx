@@ -10,7 +10,7 @@ const NavBar = () => {
         <Link to="/" className="flex items-center gap-2">
           <Terminal className="h-6 w-6 text-cyber-green" />
           <span className="text-xl font-bold text-cyber-green animate-glow">
-            EthicalHackIsland
+            CyberChallenge
           </span>
         </Link>
         

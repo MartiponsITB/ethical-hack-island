@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <Terminal className="h-6 w-6 text-cyber-green" />
-              <span className="text-xl font-bold text-cyber-green">EthicalHackIsland</span>
+              <span className="text-xl font-bold text-cyber-green">CyberChallenge</span>
             </Link>
             <p className="text-muted-foreground mb-4">
               Plataforma de reptes de ciberseguretat dissenyada per millorar les habilitats en hacking ètic i administració de sistemes.
@@ -73,7 +73,7 @@ const Footer = () => {
         
         <div className="border-t border-cyber-green/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} EthicalHackIsland. Tots els drets reservats.
+            &copy; {new Date().getFullYear()} CyberChallenge. Tots els drets reservats.
           </p>
           <div className="flex space-x-6">
             <Link to="/privacy" className="text-sm text-muted-foreground hover:text-cyber-green transition">
