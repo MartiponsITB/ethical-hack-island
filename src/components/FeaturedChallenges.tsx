@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Download, Users, Trophy } from "lucide-react";
+import { Download } from "lucide-react";
 
 interface ChallengeProps {
   id: number;
@@ -46,15 +46,16 @@ const challenges: ChallengeProps[] = [
     difficulty: "Mig",
     category: "Defensa",
     completions: 156
+  },
+  {
+    id: 5,
+    title: "Anàlisi Forense",
+    description: "Investiga un incident de seguretat i identifica com es va produir l'atac.",
+    difficulty: "Difícil",
+    category: "Forense",
+    completions: 112
   }
 ];
-
-const difficultyColors = {
-  "Fàcil": "bg-green-600",
-  "Mig": "bg-yellow-600",
-  "Difícil": "bg-orange-600",
-  "Expert": "bg-red-600"
-};
 
 const categoryColors = {
   "Xarxes": "bg-blue-600",
@@ -65,6 +66,15 @@ const categoryColors = {
   "Defensa": "bg-teal-600",
   "Exploit": "bg-rose-600",
   "Hackaton": "bg-amber-600"
+};
+
+const hackatonChallenge = {
+  id: 8,
+  title: "Hackaton Final",
+  description: "Desafia totes les teves habilitats en aquest repte final que combina totes les categories anteriors.",
+  difficulty: "Expert",
+  category: "Hackaton",
+  completions: 12
 };
 
 const FeaturedChallenges = () => {
@@ -86,9 +96,6 @@ const FeaturedChallenges = () => {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-xl text-cyber-green">{challenge.title}</CardTitle>
-                  <Badge className={`${difficultyColors[challenge.difficulty]} hover:${difficultyColors[challenge.difficulty]}`}>
-                    {challenge.difficulty}
-                  </Badge>
                 </div>
                 <Badge className={`${categoryColors[challenge.category]} hover:${categoryColors[challenge.category]} mt-2`}>
                   {challenge.category}
@@ -97,19 +104,39 @@ const FeaturedChallenges = () => {
               <CardContent>
                 <p className="text-muted-foreground">{challenge.description}</p>
               </CardContent>
-              <CardFooter className="flex justify-between">
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <Trophy className="h-4 w-4 mr-1" />
-                  <span>{challenge.completions} <span className="hidden sm:inline">completats</span></span>
-                </div>
-                <Link to={`/challenge/${challenge.id}`}>
-                  <Button className="bg-cyber-green text-cyber-black hover:bg-cyber-green/90">
+              <CardFooter>
+                <Link to={`/challenge/${challenge.id}`} className="w-full">
+                  <Button className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90">
                     <Download className="h-4 w-4 mr-2" /> Descarregar OVA
                   </Button>
                 </Link>
               </CardFooter>
             </Card>
           ))}
+        </div>
+
+        <div className="mt-16">
+          <h3 className="text-2xl font-bold cyber-title mb-8 text-center">Repte Final</h3>
+          <Card className="cyber-container bg-cyber-black/80 border-amber-500/40 max-w-2xl mx-auto">
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-xl text-amber-500">{hackatonChallenge.title}</CardTitle>
+              </div>
+              <Badge className={`${categoryColors[hackatonChallenge.category]} hover:${categoryColors[hackatonChallenge.category]} mt-2`}>
+                {hackatonChallenge.category}
+              </Badge>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">{hackatonChallenge.description}</p>
+            </CardContent>
+            <CardFooter>
+              <Link to={`/challenge/${hackatonChallenge.id}`} className="w-full">
+                <Button className="w-full bg-amber-500 text-cyber-black hover:bg-amber-500/90">
+                  <Download className="h-4 w-4 mr-2" /> Descarregar OVA
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
         </div>
       </div>
     </section>

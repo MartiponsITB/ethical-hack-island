@@ -194,9 +194,52 @@ const Challenges = () => {
         </Tabs>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredChallenges.length > 0 ? (
-            filteredChallenges.map((challenge) => (
-              <Card key={challenge.id} className={`cyber-container bg-cyber-black/80 border-cyber-green/40 ${challenge.locked ? 'relative overflow-hidden' : ''}`}>
+          {filteredChallenges.filter(challenge => challenge.category !== "Hackaton").length > 0 ? (
+            filteredChallenges
+              .filter(challenge => challenge.category !== "Hackaton")
+              .map((challenge) => (
+                <Card key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40">
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <CardTitle className="text-xl text-cyber-green">{challenge.title}</CardTitle>
+                    </div>
+                    <Badge className={`${categoryColors[challenge.category]} hover:${categoryColors[challenge.category]} flex items-center w-fit gap-1 mt-2`}>
+                      {categoryIcons[challenge.category]}
+                      {challenge.category}
+                    </Badge>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">{challenge.description}</p>
+                    <div className="mt-4">
+                      <Badge variant="outline" className="border-cyber-green/30 text-cyber-green">
+                        {challenge.points} punts
+                      </Badge>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Link to={`/challenge/${challenge.id}`} className="w-full">
+                      <Button 
+                        className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90"
+                      >
+                        <Download className="h-4 w-4 mr-2" /> Veure repte
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground">No s'han trobat reptes que coincideixin amb la cerca.</p>
+            </div>
+          )}
+        </div>
+        
+        <div className="mt-16">
+          <h3 className="text-2xl font-bold cyber-title mb-8 text-center">Repte Final</h3>
+          {filteredChallenges
+            .filter(challenge => challenge.category === "Hackaton")
+            .map((challenge) => (
+              <Card key={challenge.id} className={`cyber-container bg-cyber-black/80 border-amber-500/40 max-w-2xl mx-auto ${challenge.locked ? 'relative overflow-hidden' : ''}`}>
                 {challenge.locked && (
                   <div className="absolute inset-0 bg-cyber-black/80 backdrop-blur-sm flex items-center justify-center z-10">
                     <div className="text-center p-4">
@@ -208,10 +251,7 @@ const Challenges = () => {
                 )}
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <CardTitle className="text-xl text-cyber-green">{challenge.title}</CardTitle>
-                    <Badge className={`${difficultyColors[challenge.difficulty]} hover:${difficultyColors[challenge.difficulty]}`}>
-                      {challenge.difficulty}
-                    </Badge>
+                    <CardTitle className="text-xl text-amber-500">{challenge.title}</CardTitle>
                   </div>
                   <Badge className={`${categoryColors[challenge.category]} hover:${categoryColors[challenge.category]} flex items-center w-fit gap-1 mt-2`}>
                     {categoryIcons[challenge.category]}
@@ -220,19 +260,16 @@ const Challenges = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">{challenge.description}</p>
-                  <div className="mt-4 flex items-center gap-2">
-                    <Badge variant="outline" className="border-cyber-green/30 text-cyber-green">
+                  <div className="mt-4">
+                    <Badge variant="outline" className="border-amber-500/30 text-amber-500">
                       {challenge.points} punts
                     </Badge>
-                    <span className="text-xs text-muted-foreground">
-                      {challenge.completions} completats
-                    </span>
                   </div>
                 </CardContent>
                 <CardFooter>
                   <Link to={`/challenge/${challenge.id}`} className="w-full">
                     <Button 
-                      className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90"
+                      className="w-full bg-amber-500 text-cyber-black hover:bg-amber-500/90"
                       disabled={challenge.locked}
                     >
                       <Download className="h-4 w-4 mr-2" /> Veure repte
@@ -240,12 +277,7 @@ const Challenges = () => {
                   </Link>
                 </CardFooter>
               </Card>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">No s'han trobat reptes que coincideixin amb la cerca.</p>
-            </div>
-          )}
+            ))}
         </div>
       </main>
       
