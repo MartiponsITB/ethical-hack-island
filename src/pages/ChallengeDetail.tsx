@@ -1,4 +1,3 @@
-
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import NavBar from "@/components/NavBar";
@@ -42,24 +41,14 @@ const ChallengeDetail = () => {
       
       if (isCorrect) {
         toast({
-          title: (
-            <div className="flex items-center">
-              <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />
-              Flag correcta!
-            </div>
-          ),
+          title: "Flag correcta!",
           description: "Has completat el repte amb èxit!",
           className: "border-green-500 bg-green-500/10",
         });
         setFlag("");
       } else {
         toast({
-          title: (
-            <div className="flex items-center">
-              <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
-              Flag incorrecta
-            </div>
-          ),
+          title: "Flag incorrecta",
           description: "La flag introduïda no és vàlida. Torna a provar.",
           variant: "destructive",
         });
