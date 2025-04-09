@@ -1,9 +1,5 @@
 
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
 
 interface ChallengeProps {
   id: number;
@@ -83,60 +79,68 @@ const FeaturedChallenges = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold cyber-title">Reptes destacats</h2>
-          <Link to="/challenges">
-            <Button variant="link" className="text-cyber-green hover:text-cyber-blue">
-              Veure tots els reptes
-            </Button>
-          </Link>
+          <a href="/challenges" className="text-cyber-green hover:text-cyber-blue">
+            Veure tots els reptes
+          </a>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {challenges.map((challenge) => (
-            <Card key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40">
-              <CardHeader>
+            <div key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40">
+              <div className="p-6">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl text-cyber-green">{challenge.title}</CardTitle>
+                  <h3 className="text-xl text-cyber-green">{challenge.title}</h3>
                 </div>
-                <Badge className={`${categoryColors[challenge.category]} hover:${categoryColors[challenge.category]} mt-2`}>
+                <div className={`${categoryColors[challenge.category]} hover:${categoryColors[challenge.category]} inline-flex items-center py-1 px-2 rounded-md text-xs font-medium mt-2`}>
                   {challenge.category}
-                </Badge>
-              </CardHeader>
-              <CardContent>
+                </div>
+              </div>
+              <div className="px-6 pb-4">
                 <p className="text-muted-foreground">{challenge.description}</p>
-              </CardContent>
-              <CardFooter>
-                <Link to={`/challenge/${challenge.id}`} className="w-full">
-                  <Button className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90">
-                    <Download className="h-4 w-4 mr-2" /> Descarregar OVA
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
+              </div>
+              <div className="px-6 py-4 border-t border-cyber-green/10">
+                <a href={`/challenge/${challenge.id}`} className="block w-full">
+                  <button className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90 py-2 px-4 rounded-md flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 mr-2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Descarregar OVA
+                  </button>
+                </a>
+              </div>
+            </div>
           ))}
         </div>
 
         <div className="mt-16">
           <h3 className="text-2xl font-bold cyber-title mb-8 text-center">Repte Final</h3>
-          <Card className="cyber-container bg-cyber-black/80 border-amber-500/40 max-w-2xl mx-auto">
-            <CardHeader>
+          <div className="cyber-container bg-cyber-black/80 border-amber-500/40 max-w-2xl mx-auto">
+            <div className="p-6">
               <div className="flex justify-between items-start">
-                <CardTitle className="text-xl text-amber-500">{hackatonChallenge.title}</CardTitle>
+                <h3 className="text-xl text-amber-500">{hackatonChallenge.title}</h3>
               </div>
-              <Badge className={`${categoryColors[hackatonChallenge.category]} hover:${categoryColors[hackatonChallenge.category]} mt-2`}>
+              <div className={`${categoryColors[hackatonChallenge.category]} hover:${categoryColors[hackatonChallenge.category]} inline-flex items-center py-1 px-2 rounded-md text-xs font-medium mt-2`}>
                 {hackatonChallenge.category}
-              </Badge>
-            </CardHeader>
-            <CardContent>
+              </div>
+            </div>
+            <div className="px-6 pb-4">
               <p className="text-muted-foreground">{hackatonChallenge.description}</p>
-            </CardContent>
-            <CardFooter>
-              <Link to={`/challenge/${hackatonChallenge.id}`} className="w-full">
-                <Button className="w-full bg-amber-500 text-cyber-black hover:bg-amber-500/90">
-                  <Download className="h-4 w-4 mr-2" /> Descarregar OVA
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
+            </div>
+            <div className="px-6 py-4 border-t border-amber-500/10">
+              <a href={`/challenge/${hackatonChallenge.id}`} className="block w-full">
+                <button className="w-full bg-amber-500 text-cyber-black hover:bg-amber-500/90 py-2 px-4 rounded-md flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 mr-2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Descarregar OVA
+                </button>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
