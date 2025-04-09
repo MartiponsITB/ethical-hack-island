@@ -1,5 +1,6 @@
 
 import { Link } from "react-router-dom";
+import { Lock } from "lucide-react";
 
 interface ChallengeProps {
   id: number;
@@ -77,14 +78,11 @@ const FeaturedChallenges = () => {
   return (
     <section className="py-16 bg-cyber-darkgray">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-center items-center mb-8">
           <h2 className="text-3xl font-bold cyber-title">Reptes destacats</h2>
-          <a href="/challenges" className="text-cyber-green hover:text-cyber-blue">
-            Veure tots els reptes
-          </a>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {challenges.map((challenge) => (
             <div key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40">
               <div className="p-6">
@@ -114,9 +112,17 @@ const FeaturedChallenges = () => {
           ))}
         </div>
 
-        <div className="mt-16">
+        <div className="mt-16 max-w-2xl mx-auto">
           <h3 className="text-2xl font-bold cyber-title mb-8 text-center">Repte Final</h3>
-          <div className="cyber-container bg-cyber-black/80 border-amber-500/40 max-w-2xl mx-auto">
+          <div className="cyber-container bg-cyber-black/80 border-amber-500/40 relative overflow-hidden">
+            <div className="absolute inset-0 bg-cyber-black/80 backdrop-blur-sm flex items-center justify-center z-10">
+              <div className="text-center p-4">
+                <Lock className="h-12 w-12 text-cyber-green mx-auto mb-3" />
+                <h3 className="text-lg font-bold text-cyber-green mb-1">Repte Bloquejat</h3>
+                <p className="text-sm text-muted-foreground">Completa tots els reptes anteriors per desbloquejar el Hackaton Final</p>
+              </div>
+            </div>
+            
             <div className="p-6">
               <div className="flex justify-between items-start">
                 <h3 className="text-xl text-amber-500">{hackatonChallenge.title}</h3>
@@ -129,16 +135,14 @@ const FeaturedChallenges = () => {
               <p className="text-muted-foreground">{hackatonChallenge.description}</p>
             </div>
             <div className="px-6 py-4 border-t border-amber-500/10">
-              <a href={`/challenge/${hackatonChallenge.id}`} className="block w-full">
-                <button className="w-full bg-amber-500 text-cyber-black hover:bg-amber-500/90 py-2 px-4 rounded-md flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 mr-2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                  </svg>
-                  Descarregar OVA
-                </button>
-              </a>
+              <button disabled className="w-full bg-amber-500/50 text-cyber-black/50 py-2 px-4 rounded-md flex items-center justify-center cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 mr-2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Descarregar OVA
+              </button>
             </div>
           </div>
         </div>

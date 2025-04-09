@@ -1,9 +1,9 @@
 
 import NavBar from "@/components/NavBar";
 import Hero from "@/components/Hero";
-import FeaturedChallenges from "@/components/FeaturedChallenges";
 import HowItWorks from "@/components/HowItWorks";
-import FlagSubmission from "@/components/FlagSubmission";
+import FeaturedChallenges from "@/components/FeaturedChallenges";
+import Leaderboard from "@/components/Leaderboard";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -12,9 +12,9 @@ const Index = () => {
       <NavBar />
       <main className="pt-16">
         <Hero />
-        <FeaturedChallenges />
         <HowItWorks />
-        <FlagSubmission />
+        <FeaturedChallenges />
+        <Leaderboard />
       </main>
       <Footer />
     </div>
