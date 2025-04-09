@@ -36,6 +36,10 @@ const challenges: ChallengeProps[] = [
     category: "Exploit",
     completions: 92
   },
+]
+
+// We're moving these two challenges to be displayed in the center
+const centerChallenges: ChallengeProps[] = [
   {
     id: 4,
     title: "Defensa de Sistemes",
@@ -82,9 +86,40 @@ const FeaturedChallenges = () => {
           <h2 className="text-3xl font-bold cyber-title">Reptes</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {challenges.map((challenge) => (
             <div key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40">
+              <div className="p-6">
+                <div className="flex justify-between items-start">
+                  <h3 className="text-xl text-cyber-green">{challenge.title}</h3>
+                </div>
+                <div className={`${categoryColors[challenge.category]} hover:${categoryColors[challenge.category]} inline-flex items-center py-1 px-2 rounded-md text-xs font-medium mt-2`}>
+                  {challenge.category}
+                </div>
+              </div>
+              <div className="px-6 pb-4">
+                <p className="text-muted-foreground">{challenge.description}</p>
+              </div>
+              <div className="px-6 py-4 border-t border-cyber-green/10">
+                <a href={`/challenge/${challenge.id}`} className="block w-full">
+                  <button className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90 py-2 px-4 rounded-md flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 mr-2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Descarregar OVA
+                  </button>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Center challenges - placing them in their own container with flex justify-center */}
+        <div className="mt-8 flex justify-center gap-6 max-w-5xl mx-auto">
+          {centerChallenges.map((challenge) => (
+            <div key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40 w-full md:w-80">
               <div className="p-6">
                 <div className="flex justify-between items-start">
                   <h3 className="text-xl text-cyber-green">{challenge.title}</h3>
