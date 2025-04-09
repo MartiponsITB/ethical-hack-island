@@ -79,7 +79,7 @@ const FeaturedChallenges = () => {
     <section className="py-16 bg-cyber-darkgray">
       <div className="container mx-auto px-4">
         <div className="flex justify-center items-center mb-8">
-          <h2 className="text-3xl font-bold cyber-title">Reptes destacats</h2>
+          <h2 className="text-3xl font-bold cyber-title">Reptes</h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -112,9 +112,9 @@ const FeaturedChallenges = () => {
           ))}
         </div>
 
-        <div className="mt-16 max-w-2xl mx-auto">
+        <div className="mt-16 flex flex-col items-center">
           <h3 className="text-2xl font-bold cyber-title mb-8 text-center">Repte Final</h3>
-          <div className="cyber-container bg-cyber-black/80 border-amber-500/40 relative overflow-hidden">
+          <div className="cyber-container bg-cyber-black/80 border-amber-500/40 relative overflow-hidden max-w-2xl">
             <div className="absolute inset-0 bg-cyber-black/80 backdrop-blur-sm flex items-center justify-center z-10">
               <div className="text-center p-4">
                 <Lock className="h-12 w-12 text-cyber-green mx-auto mb-3" />

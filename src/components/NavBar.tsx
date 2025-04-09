@@ -15,9 +15,9 @@ const NavBar = () => {
         </Link>
         
         <div className="hidden md:flex items-center space-x-6">
-          <Link to="/challenges" className="text-foreground hover:text-cyber-green transition">
+          <a href="/#reptes" className="text-foreground hover:text-cyber-green transition">
             Reptes
-          </Link>
+          </a>
           <Link to="/leaderboard" className="text-foreground hover:text-cyber-green transition">
             Classificació
           </Link>

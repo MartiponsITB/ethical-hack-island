@@ -1,7 +1,5 @@
 
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { ChevronRight, Shield, Terminal, Server } from "lucide-react";
+import { Shield, Terminal, Server } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -18,18 +16,9 @@ const Hero = () => {
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           <span className="text-cyber-green cyber-glow">Cyber</span>Challenge
         </h1>
-        <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
+        <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-16">
           Desafia les teves habilitats en ciberseguretat, hacking ètic i administració de sistemes
         </p>
-        
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-          <Button size="lg" className="bg-cyber-green text-cyber-black hover:bg-cyber-green/90 px-8 py-6">
-            Començar ara <ChevronRight className="ml-2 h-5 w-5" />
-          </Button>
-          <Button size="lg" variant="outline" className="border-cyber-green/50 text-cyber-green hover:bg-cyber-green/10 px-8 py-6">
-            Explorar reptes
-          </Button>
-        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           <div className="cyber-container p-6 bg-cyber-black/50 backdrop-blur-sm">

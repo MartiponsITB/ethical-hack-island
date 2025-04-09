@@ -13,7 +13,9 @@ const Index = () => {
       <main className="pt-16">
         <Hero />
         <HowItWorks />
-        <FeaturedChallenges />
+        <section id="reptes">
+          <FeaturedChallenges />
+        </section>
         <Leaderboard />
       </main>
       <Footer />
