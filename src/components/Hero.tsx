@@ -1,15 +1,12 @@
-
 import { Shield, Terminal, Server } from "lucide-react";
-
 const Hero = () => {
-  return (
-    <div className="relative overflow-hidden py-24">
+  return <div className="relative overflow-hidden py-24">
       {/* Background elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-cyber-green/10"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-cyber-green/10"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-cyber-green/10"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(12,252,131,0.05),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(12,252,131,0.05),transparent_70%)] bg-cyber-black"></div>
       </div>
       
       <div className="container relative z-10 mx-auto px-4 text-center">
@@ -40,8 +37,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Hero;
