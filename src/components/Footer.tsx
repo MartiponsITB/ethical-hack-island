@@ -32,7 +32,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 cyber-title">Navegació</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/challenges" className="text-muted-foreground hover:text-cyber-green transition">
+                <Link to="/#reptes" className="text-muted-foreground hover:text-cyber-green transition">
                   Reptes
                 </Link>
               </li>
@@ -53,19 +53,19 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 cyber-title">Recursos</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/faq" className="text-muted-foreground hover:text-cyber-green transition">
+                <span className="text-muted-foreground cursor-default">
                   FAQ
-                </Link>
+                </span>
               </li>
               <li>
-                <Link to="/guides" className="text-muted-foreground hover:text-cyber-green transition">
+                <span className="text-muted-foreground cursor-default">
                   Guies
-                </Link>
+                </span>
               </li>
               <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-cyber-green transition">
+                <span className="text-muted-foreground cursor-default">
                   Contacte
-                </Link>
+                </span>
               </li>
             </ul>
           </div>
@@ -76,12 +76,12 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} CyberChallenge. Tots els drets reservats.
           </p>
           <div className="flex space-x-6">
-            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-cyber-green transition">
+            <span className="text-sm text-muted-foreground cursor-default">
               Privacitat
-            </Link>
-            <Link to="/terms" className="text-sm text-muted-foreground hover:text-cyber-green transition">
+            </span>
+            <span className="text-sm text-muted-foreground cursor-default">
               Termes
-            </Link>
+            </span>
           </div>
         </div>
       </div>
