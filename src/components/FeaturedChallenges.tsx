@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Lock } from "lucide-react";
 interface ChallengeProps {
@@ -67,13 +66,13 @@ const hackatonChallenge = {
   completions: 12
 };
 const FeaturedChallenges = () => {
-  return <section className="py-20 bg-cyber-darkgray">
-      <div className="container mx-auto px-4 bg-cyber-black py-12">
-        <div className="flex justify-center items-center mb-12">
+  return <section className="py-16 bg-cyber-darkgray">
+      <div className="container mx-auto px-4 bg-cyber-black">
+        <div className="flex justify-center items-center mb-8">
           <h2 className="text-3xl font-bold cyber-title">Reptes</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {challenges.map(challenge => <div key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40">
               <div className="p-6">
                 <div className="flex justify-between items-start">
@@ -102,7 +101,7 @@ const FeaturedChallenges = () => {
         </div>
 
         {/* Center challenges - placing them in their own container with flex justify-center */}
-        <div className="mt-12 flex justify-center gap-8 max-w-5xl mx-auto">
+        <div className="mt-8 flex justify-center gap-6 max-w-5xl mx-auto">
           {centerChallenges.map(challenge => <div key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40 w-full md:w-80">
               <div className="p-6">
                 <div className="flex justify-between items-start">
