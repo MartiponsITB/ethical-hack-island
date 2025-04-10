@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Lock } from "lucide-react";
 interface ChallengeProps {
@@ -31,7 +30,6 @@ const challenges: ChallengeProps[] = [{
   category: "Exploit",
   completions: 92
 }];
-
 const centerChallenges: ChallengeProps[] = [{
   id: 4,
   title: "Defensa de Sistemes",
@@ -47,7 +45,6 @@ const centerChallenges: ChallengeProps[] = [{
   category: "Forense",
   completions: 112
 }];
-
 const categoryColors = {
   "Xarxes": "bg-blue-600",
   "Web": "bg-purple-600",
@@ -58,7 +55,6 @@ const categoryColors = {
   "Exploit": "bg-rose-600",
   "Hackaton": "bg-amber-600"
 };
-
 const hackatonChallenge = {
   id: 8,
   title: "Hackaton Final",
@@ -67,9 +63,8 @@ const hackatonChallenge = {
   category: "Hackaton",
   completions: 12
 };
-
 const FeaturedChallenges = () => {
-  return <section className="py-20 bg-cyber-darkgray">
+  return <section className="py-20 bg-cyber-black">
       <div className="container mx-auto px-4">
         <div className="flex justify-center items-center mb-12">
           <h2 className="text-3xl font-bold cyber-title">Reptes</h2>
