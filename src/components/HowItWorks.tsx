@@ -1,3 +1,4 @@
+
 import { ArrowRight, Download, Terminal, Flag } from "lucide-react";
 const HowItWorks = () => {
   const steps = [{
@@ -31,7 +32,7 @@ const HowItWorks = () => {
             </div>)}
         </div>
         
-        <div className="mt-16 text-center">
+        <div className="mt-12 text-center">
           <p className="text-xl text-cyber-green animate-glow font-mono mb-4">
             [ Completa el repte i puja la flag ]
           </p>
