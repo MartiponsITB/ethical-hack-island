@@ -67,7 +67,7 @@ const hackatonChallenge = {
 };
 const FeaturedChallenges = () => {
   return <section className="py-16 bg-cyber-darkgray">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 bg-cyber-black">
         <div className="flex justify-center items-center mb-8">
           <h2 className="text-3xl font-bold cyber-title">Reptes</h2>
         </div>
