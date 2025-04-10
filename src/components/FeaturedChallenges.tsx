@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Lock } from "lucide-react";
 interface ChallengeProps {
@@ -31,7 +32,6 @@ const challenges: ChallengeProps[] = [{
   completions: 92
 }];
 
-// We're moving these two challenges to be displayed in the center
 const centerChallenges: ChallengeProps[] = [{
   id: 4,
   title: "Defensa de Sistemes",
@@ -47,6 +47,7 @@ const centerChallenges: ChallengeProps[] = [{
   category: "Forense",
   completions: 112
 }];
+
 const categoryColors = {
   "Xarxes": "bg-blue-600",
   "Web": "bg-purple-600",
@@ -57,6 +58,7 @@ const categoryColors = {
   "Exploit": "bg-rose-600",
   "Hackaton": "bg-amber-600"
 };
+
 const hackatonChallenge = {
   id: 8,
   title: "Hackaton Final",
@@ -65,14 +67,15 @@ const hackatonChallenge = {
   category: "Hackaton",
   completions: 12
 };
+
 const FeaturedChallenges = () => {
-  return <section className="py-16 bg-cyber-darkgray">
-      <div className="container mx-auto px-4 bg-cyber-black">
-        <div className="flex justify-center items-center mb-8">
-          <h2 className="text-3xl font-bold cyber-title bg-cyber-black">Reptes</h2>
+  return <section className="py-20 bg-cyber-darkgray">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-center items-center mb-12">
+          <h2 className="text-3xl font-bold cyber-title">Reptes</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 w-full">
           {challenges.map(challenge => <div key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40">
               <div className="p-6">
                 <div className="flex justify-between items-start">
@@ -100,9 +103,9 @@ const FeaturedChallenges = () => {
             </div>)}
         </div>
 
-        {/* Center challenges - placing them in their own container with flex justify-center */}
-        <div className="mt-8 flex justify-center gap-6 max-w-5xl mx-auto">
-          {centerChallenges.map(challenge => <div key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40 w-full md:w-80">
+        {/* Center challenges - now in a full width grid with consistent spacing */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 w-full">
+          {centerChallenges.map(challenge => <div key={challenge.id} className="cyber-container bg-cyber-black/80 border-cyber-green/40">
               <div className="p-6">
                 <div className="flex justify-between items-start">
                   <h3 className="text-xl text-cyber-green">{challenge.title}</h3>
@@ -129,9 +132,9 @@ const FeaturedChallenges = () => {
             </div>)}
         </div>
 
-        <div className="mt-16 flex flex-col items-center">
+        <div className="mt-12 mb-8 flex flex-col items-center">
           <h3 className="text-2xl font-bold cyber-title mb-8 text-center">Repte Final</h3>
-          <div className="cyber-container bg-cyber-black/80 border-amber-500/40 relative overflow-hidden max-w-2xl">
+          <div className="cyber-container bg-cyber-black/80 border-amber-500/40 relative overflow-hidden max-w-2xl w-full">
             <div className="absolute inset-0 bg-cyber-black/80 backdrop-blur-sm flex items-center justify-center z-10">
               <div className="text-center p-4">
                 <Lock className="h-12 w-12 text-cyber-green mx-auto mb-3" />
