@@ -12,10 +12,10 @@ const Index = () => {
       <NavBar />
       <main className="pt-16">
         <Hero />
+        <HowItWorks />
         <section id="reptes">
           <FeaturedChallenges />
         </section>
-        <HowItWorks />
         <Leaderboard />
       </main>
       <Footer />
