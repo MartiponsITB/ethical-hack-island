@@ -14,11 +14,11 @@ const HowItWorks = () => {
     title: "Aconsegueix la flag",
     description: "Troba la flag oculta que demostra que has superat el repte."
   }];
-  return <section className="py-16 bg-cyber-darkgray">
+  return <section className="py-20 bg-cyber-darkgray">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12 cyber-title">Com funciona</h2>
         
-        <div className="flex flex-col md:flex-row gap-4 md:gap-2 justify-between max-w-5xl mx-auto">
+        <div className="flex flex-col md:flex-row gap-8 justify-between max-w-5xl mx-auto mb-12">
           {steps.map((step, index) => <div key={index} className="flex flex-1 flex-col items-center text-center">
               <div className="cyber-container p-6 bg-cyber-black border-cyber-green/30 h-28 w-28 flex items-center justify-center mb-6">
                 {step.icon}
@@ -32,11 +32,11 @@ const HowItWorks = () => {
             </div>)}
         </div>
         
-        <div className="mt-12 text-center">
+        <div className="text-center max-w-2xl mx-auto">
           <p className="text-xl text-cyber-green animate-glow font-mono mb-4">
             [ Completa el repte i puja la flag ]
           </p>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground">
             Després de trobar la flag oculta, envia-la a la plataforma per validar el repte i desbloquejar nous desafiaments.
             Cada repte superat t'aproparà més a convertir-te en un expert en ciberseguretat.
           </p>
