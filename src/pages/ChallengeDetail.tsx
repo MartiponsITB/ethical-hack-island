@@ -1,4 +1,3 @@
-
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import NavBar from "@/components/NavBar";
@@ -11,6 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Download, Terminal, Flag, CheckCircle2, AlertCircle, Server, Shield, Clock, Check } from "lucide-react";
 import { useChallengeStore } from "@/store/challengeStore";
 import { useAuthStore } from "@/store/authStore";
+import { Lock } from "lucide-react";
 
 const ChallengeDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,7 +25,6 @@ const ChallengeDetail = () => {
   const isHackathon = challengeId === 8;
   const isHackathonLocked = isHackathon && !hackathonUnlocked;
   
-  // This would be an API call to fetch challenge details in a real app
   const challenges = {
     1: {
       id: 1,
@@ -138,7 +137,6 @@ const ChallengeDetail = () => {
     
     setIsSubmitting(true);
     
-    // Validate the flag against our challenge store
     const { isCorrect, challengeId: validatedChallengeId } = validateFlag(flag);
     
     setTimeout(() => {
@@ -175,7 +173,6 @@ const ChallengeDetail = () => {
       
       <main className="container mx-auto px-4 pt-24 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main content */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-2">
               <h1 className="text-3xl font-bold cyber-title">{challenge.title}</h1>
@@ -222,7 +219,6 @@ const ChallengeDetail = () => {
             </Card>
           </div>
           
-          {/* Sidebar */}
           <div>
             <Card className="cyber-container bg-cyber-black mb-6 border-cyber-green/30">
               <CardHeader>

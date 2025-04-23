@@ -9,15 +9,22 @@ export interface Challenge {
   flag: string;
 }
 
+// Store user progress by username
+interface UserProgress {
+  completedChallenges: number[];
+  hackathonUnlocked: boolean;
+}
+
 interface ChallengeState {
   challenges: Challenge[];
   currentUser: string | null;
-  completedChallenges: number[];
-  hackathonUnlocked: boolean;
+  userProgress: Record<string, UserProgress>;
   validateFlag: (flag: string) => { isCorrect: boolean; challengeId: number | null };
   markChallengeCompleted: (challengeId: number) => void;
   setCurrentUser: (username: string | null) => void;
   resetProgress: () => void;
+  getUserCompletedChallenges: () => number[];
+  isHackathonUnlocked: () => boolean;
 }
 
 const CORRECT_FLAGS: Record<number, string> = {
@@ -41,8 +48,7 @@ export const useChallengeStore = create<ChallengeState>()(
         { id: 8, title: "Hackaton Final", completed: false, flag: CORRECT_FLAGS[8] },
       ],
       currentUser: null,
-      completedChallenges: [],
-      hackathonUnlocked: false,
+      userProgress: {},
 
       validateFlag: (flag: string) => {
         // Check against all challenges
@@ -57,50 +63,114 @@ export const useChallengeStore = create<ChallengeState>()(
 
       markChallengeCompleted: (challengeId: number) => {
         const state = get();
+        const username = state.currentUser;
         
-        // Don't mark as completed if already completed
-        if (state.completedChallenges.includes(challengeId)) {
+        if (!username) return; // Don't mark if no user is logged in
+        
+        // Initialize user progress if needed
+        const currentUserProgress = state.userProgress[username] || {
+          completedChallenges: [],
+          hackathonUnlocked: false
+        };
+        
+        // Don't mark as completed if already completed by this user
+        if (currentUserProgress.completedChallenges.includes(challengeId)) {
           return;
         }
 
         // Update completed challenges
-        const updatedCompletedChallenges = [...state.completedChallenges, challengeId];
+        const updatedCompletedChallenges = [...currentUserProgress.completedChallenges, challengeId];
         
         // Check if all 5 main challenges are completed to unlock hackathon
         const mainChallengesCompleted = [1, 2, 3, 4, 5].every(id => 
           updatedCompletedChallenges.includes(id)
         );
 
+        // Update the challenges UI state
+        const updatedChallenges = state.challenges.map(challenge => 
+          challenge.id === challengeId 
+            ? { ...challenge, completed: true } 
+            : challenge
+        );
+
+        // Update the store with the new user progress
         set({
-          challenges: state.challenges.map(challenge => 
-            challenge.id === challengeId 
-              ? { ...challenge, completed: true } 
-              : challenge
-          ),
-          completedChallenges: updatedCompletedChallenges,
-          hackathonUnlocked: mainChallengesCompleted
+          challenges: updatedChallenges,
+          userProgress: {
+            ...state.userProgress,
+            [username]: {
+              completedChallenges: updatedCompletedChallenges,
+              hackathonUnlocked: mainChallengesCompleted
+            }
+          }
         });
       },
 
       setCurrentUser: (username: string | null) => {
         set({ currentUser: username });
+        
+        // When user changes, update the challenge completion state
+        if (username) {
+          const userProgress = get().userProgress[username] || { 
+            completedChallenges: [],
+            hackathonUnlocked: false
+          };
+          
+          set({
+            challenges: get().challenges.map(challenge => ({
+              ...challenge,
+              completed: userProgress.completedChallenges.includes(challenge.id)
+            }))
+          });
+        } else {
+          // Reset challenges completion state when logging out
+          set({
+            challenges: get().challenges.map(challenge => ({
+              ...challenge,
+              completed: false
+            }))
+          });
+        }
       },
 
       resetProgress: () => {
+        const username = get().currentUser;
+        if (!username) return;
+        
         set({
           challenges: get().challenges.map(challenge => ({ ...challenge, completed: false })),
-          completedChallenges: [],
-          hackathonUnlocked: false
+          userProgress: {
+            ...get().userProgress,
+            [username]: {
+              completedChallenges: [],
+              hackathonUnlocked: false
+            }
+          }
         });
+      },
+      
+      getUserCompletedChallenges: () => {
+        const state = get();
+        const username = state.currentUser;
+        if (!username) return [];
+        
+        return state.userProgress[username]?.completedChallenges || [];
+      },
+      
+      isHackathonUnlocked: () => {
+        const state = get();
+        const username = state.currentUser;
+        if (!username) return false;
+        
+        return state.userProgress[username]?.hackathonUnlocked || false;
       }
     }),
     {
       name: 'user-challenge-progress',
       partialize: (state) => ({
         challenges: state.challenges,
-        completedChallenges: state.completedChallenges,
+        userProgress: state.userProgress,
         currentUser: state.currentUser,
-        hackathonUnlocked: state.hackathonUnlocked
       }),
     }
   )

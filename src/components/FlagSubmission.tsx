@@ -12,11 +12,12 @@ const FlagSubmission = () => {
   const [flag, setFlag] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { validateFlag, markChallengeCompleted, completedChallenges } = useChallengeStore();
+  const { validateFlag, markChallengeCompleted, getUserCompletedChallenges } = useChallengeStore();
   const { isAuthenticated } = useAuthStore();
   const { id } = useParams<{ id?: string }>();
   
   const currentChallengeId = id ? parseInt(id) : undefined;
+  const completedChallenges = getUserCompletedChallenges();
   const isCompleted = currentChallengeId ? completedChallenges.includes(currentChallengeId) : false;
   
   const handleSubmit = (e: React.FormEvent) => {

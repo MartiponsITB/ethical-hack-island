@@ -19,8 +19,10 @@ import { useToast } from "@/components/ui/use-toast";
 const NavBar = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { isAuthenticated, currentUser, logout } = useAuthStore();
-  const { completedChallenges, resetProgress } = useChallengeStore();
+  const { getUserCompletedChallenges, resetProgress } = useChallengeStore();
   const { toast } = useToast();
+  
+  const completedChallenges = getUserCompletedChallenges();
   
   const handleLogout = () => {
     logout();
