@@ -7,36 +7,8 @@ import { useEffect, useState } from "react";
 interface LeaderboardEntry {
   rank: number;
   username: string;
-  points: number;
-  challenges: number;
-  hackathonTime?: string; // Time to complete hackathon in human readable format
+  hackathonTime?: string;
 }
-
-const calculatePoints = (challenges: number[], completionTime?: number): number => {
-  // Base points for each challenge
-  const basePoints = challenges.reduce((total, challengeId) => {
-    const points = {
-      1: 100, // Repte Xarxes
-      2: 200, // Repte SQL
-      3: 300, // Repte Exploit
-      4: 250, // Repte Defensa
-      5: 350, // Repte Anàlisi Forense
-      8: 1000, // Hackathon
-    };
-    return total + (points[challengeId as keyof typeof points] || 0);
-  }, 0);
-
-  // Bonus for hackathon completion speed
-  if (completionTime && challenges.includes(8)) {
-    const hours = completionTime / (1000 * 60 * 60); // Convert ms to hours
-    if (hours <= 6) return basePoints + 500; // Super fast completion
-    if (hours <= 12) return basePoints + 300; // Fast completion
-    if (hours <= 24) return basePoints + 200; // Good completion
-    if (hours <= 36) return basePoints + 100; // Decent completion
-  }
-
-  return basePoints;
-};
 
 const formatTime = (ms: number): string => {
   const seconds = Math.floor((ms / 1000) % 60);
@@ -55,24 +27,28 @@ const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
-    const entries: LeaderboardEntry[] = Object.entries(userProgress).map(([username, progress]) => {
-      const hackathonTime = progress.hackathonStartTime && progress.hackathonEndTime 
-        ? progress.hackathonEndTime - progress.hackathonStartTime
-        : undefined;
+    const entries: LeaderboardEntry[] = Object.entries(userProgress)
+      .filter(([_, progress]) => progress.hackathonEndTime) // Solo mostrar usuarios que han completado el hackathon
+      .map(([username, progress]) => {
+        const hackathonTime = progress.hackathonStartTime && progress.hackathonEndTime 
+          ? progress.hackathonEndTime - progress.hackathonStartTime
+          : undefined;
         
-      return {
-        username,
-        challenges: progress.completedChallenges.length,
-        points: calculatePoints(progress.completedChallenges, hackathonTime),
-        hackathonTime: hackathonTime ? formatTime(hackathonTime) : undefined,
-        rank: 0, // Will be calculated after sorting
-      };
-    });
+        return {
+          username,
+          hackathonTime: hackathonTime ? formatTime(hackathonTime) : undefined,
+          rank: 0, // Se calculará después de ordenar
+        };
+      });
 
-    // Sort by points (highest first)
-    const sorted = entries.sort((a, b) => b.points - a.points);
+    // Ordenar por tiempo de completación (más rápido primero)
+    const sorted = entries.sort((a, b) => {
+      if (!a.hackathonTime) return 1;
+      if (!b.hackathonTime) return -1;
+      return a.hackathonTime.localeCompare(b.hackathonTime);
+    });
     
-    // Assign ranks
+    // Asignar posiciones
     const ranked = sorted.map((entry, index) => ({
       ...entry,
       rank: index + 1
@@ -81,7 +57,8 @@ const Leaderboard = () => {
     setLeaderboardData(ranked);
   }, [userProgress]);
 
-  return <section className="py-16 bg-cyber-darkgray">
+  return (
+    <section className="py-16 bg-cyber-darkgray">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-center items-center mb-8">
@@ -96,9 +73,7 @@ const Leaderboard = () => {
                   <TableRow className="border-cyber-green/20">
                     <TableHead className="w-24">#</TableHead>
                     <TableHead>Participant</TableHead>
-                    <TableHead>Reptes completats</TableHead>
                     <TableHead>Temps Hackathon</TableHead>
-                    <TableHead className="text-right">Punts</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -111,9 +86,7 @@ const Leaderboard = () => {
                         {entry.rank > 3 && <span className="text-muted-foreground">{entry.rank}</span>}
                       </TableCell>
                       <TableCell className="terminal-text">{entry.username}</TableCell>
-                      <TableCell>{entry.challenges}</TableCell>
                       <TableCell>{entry.hackathonTime || 'No completat'}</TableCell>
-                      <TableCell className="text-right font-mono text-cyber-green">{entry.points}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -126,7 +99,8 @@ const Leaderboard = () => {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
 
 export default Leaderboard;

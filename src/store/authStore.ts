@@ -12,6 +12,7 @@ interface AuthState {
   currentUser: string | null;
   users: User[];
   isAuthenticated: boolean;
+  isAdmin: boolean;
   login: (username: string, password: string) => boolean;
   register: (username: string, password: string) => boolean;
   logout: () => void;
@@ -23,6 +24,7 @@ export const useAuthStore = create<AuthState>()(
       currentUser: null,
       users: [],
       isAuthenticated: false,
+      isAdmin: false,
       
       login: (username: string, password: string) => {
         const user = get().users.find(
@@ -30,7 +32,11 @@ export const useAuthStore = create<AuthState>()(
         );
         
         if (user) {
-          set({ currentUser: username, isAuthenticated: true });
+          set({ 
+            currentUser: username, 
+            isAuthenticated: true,
+            isAdmin: username === 'admin' // Solo el usuario 'admin' tendrá permisos de administrador
+          });
           useChallengeStore.getState().setCurrentUser(username);
           return true;
         }
@@ -48,7 +54,8 @@ export const useAuthStore = create<AuthState>()(
         set(state => ({
           users: [...state.users, { username, password }],
           currentUser: username,
-          isAuthenticated: true
+          isAuthenticated: true,
+          isAdmin: username === 'admin'
         }));
         
         useChallengeStore.getState().setCurrentUser(username);
@@ -56,7 +63,7 @@ export const useAuthStore = create<AuthState>()(
       },
       
       logout: () => {
-        set({ currentUser: null, isAuthenticated: false });
+        set({ currentUser: null, isAuthenticated: false, isAdmin: false });
         useChallengeStore.getState().setCurrentUser(null);
       }
     }),

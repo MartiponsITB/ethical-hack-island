@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -56,9 +55,6 @@ const NavBar = () => {
           <a href="/#reptes" className="text-foreground hover:text-cyber-green transition">
             Reptes
           </a>
-          <Link to="/challenges" className="text-foreground hover:text-cyber-green transition">
-            Tots els reptes
-          </Link>
           <Link to="/leaderboard" className="text-foreground hover:text-cyber-green transition">
             Classificació
           </Link>
