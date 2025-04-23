@@ -1,3 +1,4 @@
+
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import NavBar from "@/components/NavBar";
@@ -7,45 +8,155 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { Download, Terminal, Flag, CheckCircle2, AlertCircle, Server, Shield, Clock } from "lucide-react";
+import { Download, Terminal, Flag, CheckCircle2, AlertCircle, Server, Shield, Clock, Check } from "lucide-react";
+import { useChallengeStore } from "@/store/challengeStore";
+import { useAuthStore } from "@/store/authStore";
 
 const ChallengeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [flag, setFlag] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { validateFlag, markChallengeCompleted, completedChallenges, hackathonUnlocked } = useChallengeStore();
+  const { isAuthenticated } = useAuthStore();
+  
+  const challengeId = Number(id);
+  const isCompleted = completedChallenges.includes(challengeId);
+  const isHackathon = challengeId === 8;
+  const isHackathonLocked = isHackathon && !hackathonUnlocked;
   
   // This would be an API call to fetch challenge details in a real app
-  const challenge = {
-    id: Number(id),
-    title: "Vulnerabilitat SSH",
-    description: "En aquest repte, hauràs de trobar i explotar una vulnerabilitat en la configuració SSH d'un servidor Linux. El servidor té una configuració incorrecta que permet l'accés no autoritzat si s'utilitza el mètode adequat.",
-    longDescription: "L'administrador del sistema ha configurat incorrectament el servei SSH, permetent l'accés amb claus febles i algoritmes obsolets. L'objectiu és aconseguir accés al sistema com a usuari admin i després escalar privilegis per obtenir accés root. La flag es troba a /root/flag.txt.",
-    difficulty: "Fàcil",
-    category: "Xarxes",
-    points: 100,
-    author: "EthicalHacker42",
-    created: "2025-03-15",
-    completions: 324,
-    ovaSize: "1.2 GB",
-    ovaUrl: "https://example.com/challenges/vulnerable-ssh.ova"
+  const challenges = {
+    1: {
+      id: 1,
+      title: "Vulnerabilitat SSH",
+      description: "En aquest repte, hauràs de trobar i explotar una vulnerabilitat en la configuració SSH d'un servidor Linux. El servidor té una configuració incorrecta que permet l'accés no autoritzat si s'utilitza el mètode adequat.",
+      longDescription: "L'administrador del sistema ha configurat incorrectament el servei SSH, permetent l'accés amb claus febles i algoritmes obsolets. L'objectiu és aconseguir accés al sistema com a usuari admin i després escalar privilegis per obtenir accés root. La flag es troba a /root/flag.txt.",
+      difficulty: "Fàcil",
+      category: "Xarxes",
+      points: 100,
+      author: "EthicalHacker42",
+      created: "2025-03-15",
+      completions: 324,
+      ovaSize: "1.2 GB",
+      ovaUrl: "https://example.com/challenges/vulnerable-ssh.ova"
+    },
+    2: {
+      id: 2,
+      title: "Atac SQL",
+      description: "Accedeix a una base de dades protegida utilitzant tècniques d'injecció SQL.",
+      longDescription: "Aquest repte consisteix en explotar una vulnerabilitat d'injecció SQL en una aplicació web per accedir a informació confidencial a la base de dades. La flag es troba a la taula 'secrets'.",
+      difficulty: "Mig",
+      category: "Web",
+      points: 200,
+      author: "SQLMaster",
+      created: "2025-03-10",
+      completions: 187,
+      ovaSize: "1.5 GB",
+      ovaUrl: "https://example.com/challenges/sql-injection.ova"
+    },
+    3: {
+      id: 3,
+      title: "Atac amb Exploit",
+      description: "Eleva els teus privilegis d'usuari normal a root en un sistema Linux utilitzant un exploit.",
+      longDescription: "En aquest repte, tindràs accés com a usuari normal a un sistema Linux vulnerable. Hauràs d'identificar una vulnerabilitat al kernel i utilitzar un exploit per escalar privilegis fins a root.",
+      difficulty: "Difícil",
+      category: "Exploit",
+      points: 300,
+      author: "KernelHacker",
+      created: "2025-02-25",
+      completions: 92,
+      ovaSize: "1.8 GB",
+      ovaUrl: "https://example.com/challenges/kernel-exploit.ova"
+    },
+    4: {
+      id: 4,
+      title: "Defensa de Sistemes",
+      description: "Configura un sistema segur i defensa'l contra diferents vectors d'atac.",
+      longDescription: "En aquest repte, hauràs de configurar un sistema Linux per protegir-lo contra diferents vectors d'atac. Inclou la configuració de firewalls, hardening del sistema i detecció d'intrusions.",
+      difficulty: "Mig",
+      category: "Defensa",
+      points: 250,
+      author: "SecurityGuru",
+      created: "2025-03-05",
+      completions: 156,
+      ovaSize: "1.6 GB",
+      ovaUrl: "https://example.com/challenges/system-defense.ova"
+    },
+    5: {
+      id: 5,
+      title: "Anàlisi Forense",
+      description: "Investiga un incident de seguretat i identifica com es va produir l'atac.",
+      longDescription: "En aquest repte, rebràs un disc dur d'un sistema que ha estat compromès. Hauràs d'utilitzar tècniques d'anàlisi forense digital per determinar com es va produir l'atac, quines accions va realitzar l'atacant i recuperar la flag.",
+      difficulty: "Difícil",
+      category: "Forense",
+      points: 350,
+      author: "ForensicExpert",
+      created: "2025-02-20",
+      completions: 112,
+      ovaSize: "2.0 GB",
+      ovaUrl: "https://example.com/challenges/digital-forensics.ova"
+    },
+    8: {
+      id: 8,
+      title: "Hackaton Final",
+      description: "Desafia totes les teves habilitats en aquest repte final que combina totes les categories anteriors.",
+      longDescription: "El hackaton final és un escenari complex que combina elements de tots els reptes anteriors. Hauràs d'utilitzar habilitats de xarxes, web, exploits, defensa i anàlisi forense per completar aquest desafiament final.",
+      difficulty: "Expert",
+      category: "Hackaton",
+      points: 1000,
+      author: "CyberMaster",
+      created: "2025-04-01",
+      completions: 12,
+      ovaSize: "3.5 GB",
+      ovaUrl: "https://example.com/challenges/hackathon-final.ova"
+    }
   };
+  
+  const challenge = challenges[challengeId as keyof typeof challenges] || challenges[1];
   
   const handleSubmitFlag = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isAuthenticated) {
+      toast({
+        title: "Inicia sessió primer",
+        description: "Cal iniciar sessió per enviar flags i desar el progrés.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (isHackathonLocked) {
+      toast({
+        title: "Repte bloquejat",
+        description: "Has de completar tots els reptes anteriors per desbloquejar el hackaton final.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     
-    // This is a placeholder for flag validation
+    // Validate the flag against our challenge store
+    const { isCorrect, challengeId: validatedChallengeId } = validateFlag(flag);
+    
     setTimeout(() => {
-      const isCorrect = Math.random() > 0.5; // Simulate random success/fail for demo
-      
-      if (isCorrect) {
+      if (isCorrect && validatedChallengeId === challengeId) {
+        markChallengeCompleted(validatedChallengeId);
+        
         toast({
           title: "Flag correcta!",
           description: "Has completat el repte amb èxit!",
           className: "border-green-500 bg-green-500/10",
         });
         setFlag("");
+      } else if (isCorrect && validatedChallengeId !== challengeId) {
+        toast({
+          title: "Flag correcta però per un altre repte!",
+          description: "Aquesta flag és vàlida, però pertany a un altre repte.",
+          variant: "destructive",
+        });
       } else {
         toast({
           title: "Flag incorrecta",
@@ -55,7 +166,7 @@ const ChallengeDetail = () => {
       }
       
       setIsSubmitting(false);
-    }, 1500);
+    }, 1000);
   };
   
   return (
@@ -66,7 +177,12 @@ const ChallengeDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main content */}
           <div className="lg:col-span-2">
-            <h1 className="text-3xl font-bold mb-2 cyber-title">{challenge.title}</h1>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-3xl font-bold cyber-title">{challenge.title}</h1>
+              {isCompleted && (
+                <CheckCircle2 className="h-6 w-6 text-green-500" />
+              )}
+            </div>
             
             <div className="flex flex-wrap gap-2 mb-6">
               <Badge className="bg-green-600 hover:bg-green-600">{challenge.difficulty}</Badge>
@@ -74,9 +190,12 @@ const ChallengeDetail = () => {
               <Badge variant="outline" className="border-cyber-green/30 text-cyber-green">
                 <Shield className="h-3 w-3 mr-1" /> {challenge.points} punts
               </Badge>
+              {isCompleted && (
+                <Badge className="bg-green-500 hover:bg-green-500">Completat</Badge>
+              )}
             </div>
             
-            <Card className="cyber-container bg-cyber-black mb-8 border-cyber-green/30">
+            <Card className={`cyber-container bg-cyber-black mb-8 ${isCompleted ? 'border-green-500/30' : 'border-cyber-green/30'}`}>
               <CardHeader>
                 <CardTitle>Descripció</CardTitle>
               </CardHeader>
@@ -116,7 +235,7 @@ const ChallengeDetail = () => {
                     <span>{challenge.ovaSize}</span>
                   </div>
                   
-                  <Button className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90">
+                  <Button disabled={isHackathonLocked} className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90">
                     <Download className="h-4 w-4 mr-2" /> Descarregar OVA
                   </Button>
                   
@@ -127,30 +246,70 @@ const ChallengeDetail = () => {
               </CardContent>
             </Card>
             
-            <Card className="cyber-container bg-cyber-black mb-6 border-cyber-green/30">
+            <Card className={`cyber-container bg-cyber-black mb-6 ${isCompleted ? 'border-green-500/30' : 'border-cyber-green/30'}`}>
               <CardHeader>
-                <CardTitle>Validar Flag</CardTitle>
-                <CardDescription>Has resolt el repte? Envia la flag!</CardDescription>
+                <CardTitle>
+                  {isCompleted ? (
+                    <div className="flex items-center">
+                      <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />
+                      Repte Completat!
+                    </div>
+                  ) : (
+                    "Validar Flag"
+                  )}
+                </CardTitle>
+                {isCompleted ? (
+                  <CardDescription>Aquest repte ja ha estat completat.</CardDescription>
+                ) : (
+                  <CardDescription>Has resolt el repte? Envia la flag!</CardDescription>
+                )}
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmitFlag}>
-                  <div className="space-y-4">
-                    <Input
-                      type="text"
-                      placeholder="flag{...}"
-                      value={flag}
-                      onChange={(e) => setFlag(e.target.value)}
-                      className="cyber-input font-mono"
-                    />
-                    <Button 
-                      type="submit" 
-                      disabled={!flag || isSubmitting}
-                      className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90"
-                    >
-                      {isSubmitting ? "Verificant..." : "Verificar Flag"}
-                    </Button>
+                {isHackathonLocked ? (
+                  <div className="p-4 text-center">
+                    <Lock className="h-8 w-8 mx-auto mb-2 text-amber-500" />
+                    <p className="text-muted-foreground">Completa tots els reptes anteriors per desbloquejar aquest repte.</p>
                   </div>
-                </form>
+                ) : (
+                  <form onSubmit={handleSubmitFlag}>
+                    <div className="space-y-4">
+                      {!isCompleted && (
+                        <Input
+                          type="text"
+                          placeholder="flag{...}"
+                          value={flag}
+                          onChange={(e) => setFlag(e.target.value)}
+                          className="cyber-input font-mono"
+                          disabled={!isAuthenticated || isCompleted}
+                        />
+                      )}
+                      <Button 
+                        type="submit" 
+                        disabled={(!flag && !isCompleted) || isSubmitting || isCompleted || !isAuthenticated}
+                        className={`w-full ${isCompleted ? 'bg-green-500 hover:bg-green-500/90' : 'bg-cyber-green hover:bg-cyber-green/90'}`}
+                      >
+                        {isCompleted ? (
+                          <>
+                            <Check className="h-4 w-4 mr-2" />
+                            Repte Completat
+                          </>
+                        ) : isSubmitting ? (
+                          "Verificant..."
+                        ) : !isAuthenticated ? (
+                          "Inicia sessió per verificar"
+                        ) : (
+                          "Verificar Flag"
+                        )}
+                      </Button>
+                      
+                      {!isAuthenticated && (
+                        <p className="text-xs text-amber-500 text-center">
+                          Has d'iniciar sessió per enviar la flag i desar el progrés.
+                        </p>
+                      )}
+                    </div>
+                  </form>
+                )}
               </CardContent>
             </Card>
             
