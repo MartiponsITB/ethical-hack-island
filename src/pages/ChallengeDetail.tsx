@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,17 @@ const ChallengeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [flag, setFlag] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<string | null>(null);
   const { toast } = useToast();
-  const { validateFlag, markChallengeCompleted, getUserCompletedChallenges, isHackathonUnlocked } = useChallengeStore();
+  
+  const { 
+    validateFlag, 
+    markChallengeCompleted, 
+    getUserCompletedChallenges, 
+    isHackathonUnlocked,
+    getHackathonTimeLeft
+  } = useChallengeStore();
+  
   const { isAuthenticated } = useAuthStore();
   
   const challengeId = Number(id);
@@ -25,6 +34,37 @@ const ChallengeDetail = () => {
   const isHackathon = challengeId === 8;
   const hackathonUnlocked = isHackathonUnlocked();
   const isHackathonLocked = isHackathon && !hackathonUnlocked;
+  
+  useEffect(() => {
+    if (!isHackathon || !hackathonUnlocked || isCompleted) return;
+    
+    const updateTimer = () => {
+      const timeLeftMs = getHackathonTimeLeft();
+      
+      if (timeLeftMs === null) {
+        setTimeLeft(null);
+        return;
+      }
+      
+      if (timeLeftMs <= 0) {
+        setTimeLeft("Temps esgotat!");
+        return;
+      }
+      
+      const hours = Math.floor(timeLeftMs / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeftMs % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeftMs % (1000 * 60)) / 1000);
+      
+      setTimeLeft(
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      );
+    };
+    
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
+    
+    return () => clearInterval(timer);
+  }, [isHackathon, hackathonUnlocked, isCompleted, getHackathonTimeLeft]);
   
   const challenges = {
     1: {
@@ -191,6 +231,12 @@ const ChallengeDetail = () => {
               {isCompleted && (
                 <Badge className="bg-green-500 hover:bg-green-500">Completat</Badge>
               )}
+              
+              {isHackathon && hackathonUnlocked && !isCompleted && timeLeft && (
+                <Badge className="bg-amber-500 hover:bg-amber-500">
+                  <Clock className="h-3 w-3 mr-1" /> Temps restant: {timeLeft}
+                </Badge>
+              )}
             </div>
             
             <Card className={`cyber-container bg-cyber-black mb-8 ${isCompleted ? 'border-green-500/30' : 'border-cyber-green/30'}`}>
@@ -231,6 +277,17 @@ const ChallengeDetail = () => {
                     <span className="text-muted-foreground">Mida:</span>
                     <span>{challenge.ovaSize}</span>
                   </div>
+                  
+                  {isHackathon && hackathonUnlocked && !isCompleted && (
+                    <div className="mb-4 p-3 bg-amber-500/20 border border-amber-500/30 rounded-md">
+                      <div className="font-bold mb-1 text-amber-400 flex items-center">
+                        <Clock className="h-4 w-4 mr-2" /> Compte enrere iniciat
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Tens 48 hores per completar el hackathon. Temps restant: {timeLeft || "Carregant..."}
+                      </p>
+                    </div>
+                  )}
                   
                   <Button disabled={isHackathonLocked} className="w-full bg-cyber-green text-cyber-black hover:bg-cyber-green/90">
                     <Download className="h-4 w-4 mr-2" /> Descarregar OVA

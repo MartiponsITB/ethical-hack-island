@@ -9,10 +9,13 @@ export interface Challenge {
   flag: string;
 }
 
-// Store user progress by username
+// Store user progress by username with completion timestamps
 interface UserProgress {
   completedChallenges: number[];
   hackathonUnlocked: boolean;
+  hackathonStartTime?: number; // Timestamp when hackathon was started
+  hackathonEndTime?: number;   // Timestamp when hackathon was completed
+  completionTimes: Record<number, number>; // Map of challenge ID to completion timestamp
 }
 
 interface ChallengeState {
@@ -25,6 +28,10 @@ interface ChallengeState {
   resetProgress: () => void;
   getUserCompletedChallenges: () => number[];
   isHackathonUnlocked: () => boolean;
+  getHackathonTimeLeft: () => number | null;
+  getHackathonCompletionTime: () => number | null;
+  getChallengeCompletionTime: (challengeId: number) => number | null;
+  resetAllUserProgress: () => void;
 }
 
 const CORRECT_FLAGS: Record<number, string> = {
@@ -35,6 +42,8 @@ const CORRECT_FLAGS: Record<number, string> = {
   5: "55573655862",    // Repte Escalada
   8: "Gràcies_Per_Participar<3" // Hackathon
 };
+
+const HACKATHON_DURATION = 48 * 60 * 60 * 1000; // 48 hours in milliseconds
 
 export const useChallengeStore = create<ChallengeState>()(
   persist(
@@ -67,10 +76,13 @@ export const useChallengeStore = create<ChallengeState>()(
         
         if (!username) return; // Don't mark if no user is logged in
         
+        const currentTime = Date.now();
+        
         // Initialize user progress if needed
         const currentUserProgress = state.userProgress[username] || {
           completedChallenges: [],
-          hackathonUnlocked: false
+          hackathonUnlocked: false,
+          completionTimes: {}
         };
         
         // Don't mark as completed if already completed by this user
@@ -86,6 +98,24 @@ export const useChallengeStore = create<ChallengeState>()(
           updatedCompletedChallenges.includes(id)
         );
 
+        // If this is the hackathon challenge being completed
+        let hackathonEndTime = currentUserProgress.hackathonEndTime;
+        if (challengeId === 8) {
+          hackathonEndTime = currentTime;
+        }
+        
+        // If this is the first time unlocking hackathon, set the start time
+        let hackathonStartTime = currentUserProgress.hackathonStartTime;
+        if (mainChallengesCompleted && !currentUserProgress.hackathonUnlocked) {
+          hackathonStartTime = currentTime;
+        }
+
+        // Update completion times
+        const updatedCompletionTimes = {
+          ...currentUserProgress.completionTimes,
+          [challengeId]: currentTime
+        };
+
         // Update the challenges UI state
         const updatedChallenges = state.challenges.map(challenge => 
           challenge.id === challengeId 
@@ -100,7 +130,10 @@ export const useChallengeStore = create<ChallengeState>()(
             ...state.userProgress,
             [username]: {
               completedChallenges: updatedCompletedChallenges,
-              hackathonUnlocked: mainChallengesCompleted
+              hackathonUnlocked: mainChallengesCompleted,
+              hackathonStartTime,
+              hackathonEndTime,
+              completionTimes: updatedCompletionTimes
             }
           }
         });
@@ -113,7 +146,8 @@ export const useChallengeStore = create<ChallengeState>()(
         if (username) {
           const userProgress = get().userProgress[username] || { 
             completedChallenges: [],
-            hackathonUnlocked: false
+            hackathonUnlocked: false,
+            completionTimes: {}
           };
           
           set({
@@ -143,9 +177,17 @@ export const useChallengeStore = create<ChallengeState>()(
             ...get().userProgress,
             [username]: {
               completedChallenges: [],
-              hackathonUnlocked: false
+              hackathonUnlocked: false,
+              completionTimes: {}
             }
           }
+        });
+      },
+      
+      resetAllUserProgress: () => {
+        set({
+          userProgress: {},
+          challenges: get().challenges.map(challenge => ({ ...challenge, completed: false }))
         });
       },
       
@@ -163,6 +205,45 @@ export const useChallengeStore = create<ChallengeState>()(
         if (!username) return false;
         
         return state.userProgress[username]?.hackathonUnlocked || false;
+      },
+      
+      getHackathonTimeLeft: () => {
+        const state = get();
+        const username = state.currentUser;
+        if (!username) return null;
+        
+        const userProgress = state.userProgress[username];
+        if (!userProgress?.hackathonStartTime) return null;
+        
+        // If hackathon is already completed, return 0
+        if (userProgress.hackathonEndTime) return 0;
+        
+        const endTime = userProgress.hackathonStartTime + HACKATHON_DURATION;
+        const timeLeft = endTime - Date.now();
+        
+        // If time is up but not marked as completed
+        if (timeLeft <= 0) return 0;
+        
+        return timeLeft;
+      },
+      
+      getHackathonCompletionTime: () => {
+        const state = get();
+        const username = state.currentUser;
+        if (!username) return null;
+        
+        const userProgress = state.userProgress[username];
+        if (!userProgress?.hackathonStartTime || !userProgress?.hackathonEndTime) return null;
+        
+        return userProgress.hackathonEndTime - userProgress.hackathonStartTime;
+      },
+      
+      getChallengeCompletionTime: (challengeId: number) => {
+        const state = get();
+        const username = state.currentUser;
+        if (!username) return null;
+        
+        return state.userProgress[username]?.completionTimes[challengeId] || null;
       }
     }),
     {
