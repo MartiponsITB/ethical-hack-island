@@ -73,8 +73,11 @@ const hackatonChallenge = {
 };
 
 const FeaturedChallenges = () => {
-  const { completedChallenges, hackathonUnlocked } = useChallengeStore();
+  const { getUserCompletedChallenges, isHackathonUnlocked } = useChallengeStore();
   const { isAuthenticated } = useAuthStore();
+  
+  const completedChallenges = getUserCompletedChallenges();
+  const hackathonUnlocked = isHackathonUnlocked();
 
   return <section className="py-20 bg-cyber-black">
       <div className="container mx-auto px-4">

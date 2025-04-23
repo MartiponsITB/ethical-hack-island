@@ -7,22 +7,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { Download, Terminal, Flag, CheckCircle2, AlertCircle, Server, Shield, Clock, Check } from "lucide-react";
+import { Download, Terminal, Flag, CheckCircle2, AlertCircle, Server, Shield, Clock, Check, Lock } from "lucide-react";
 import { useChallengeStore } from "@/store/challengeStore";
 import { useAuthStore } from "@/store/authStore";
-import { Lock } from "lucide-react";
 
 const ChallengeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [flag, setFlag] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { validateFlag, markChallengeCompleted, completedChallenges, hackathonUnlocked } = useChallengeStore();
+  const { validateFlag, markChallengeCompleted, getUserCompletedChallenges, isHackathonUnlocked } = useChallengeStore();
   const { isAuthenticated } = useAuthStore();
   
   const challengeId = Number(id);
+  const completedChallenges = getUserCompletedChallenges();
   const isCompleted = completedChallenges.includes(challengeId);
   const isHackathon = challengeId === 8;
+  const hackathonUnlocked = isHackathonUnlocked();
   const isHackathonLocked = isHackathon && !hackathonUnlocked;
   
   const challenges = {
