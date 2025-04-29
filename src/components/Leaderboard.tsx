@@ -1,14 +1,9 @@
 
 import { Trophy } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useChallengeStore } from "@/store/challengeStore";
 import { useEffect, useState } from "react";
-
-interface LeaderboardEntry {
-  rank: number;
-  username: string;
-  hackathonTime?: string;
-}
+import { leaderboardApi, LeaderboardEntry } from "@/services/api";
+import { useToast } from "./ui/use-toast";
 
 const formatTime = (ms: number): string => {
   const seconds = Math.floor((ms / 1000) % 60);
@@ -23,39 +18,38 @@ const formatTime = (ms: number): string => {
 };
 
 const Leaderboard = () => {
-  const { userProgress } = useChallengeStore();
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
-    const entries: LeaderboardEntry[] = Object.entries(userProgress)
-      .filter(([_, progress]) => progress.hackathonEndTime) // Solo mostrar usuarios que han completado el hackathon
-      .map(([username, progress]) => {
-        const hackathonTime = progress.hackathonStartTime && progress.hackathonEndTime 
-          ? progress.hackathonEndTime - progress.hackathonStartTime
-          : undefined;
-        
-        return {
-          username,
-          hackathonTime: hackathonTime ? formatTime(hackathonTime) : undefined,
-          rank: 0, // Se calculará después de ordenar
-        };
-      });
+    const fetchLeaderboard = async () => {
+      setIsLoading(true);
+      try {
+        const response = await leaderboardApi.getLeaderboard();
+        if (response.success && response.data) {
+          setLeaderboardData(response.data);
+        } else {
+          toast({
+            title: "Error",
+            description: "No s'ha pogut carregar la classificació",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+        toast({
+          title: "Error",
+          description: "Hi ha hagut un problema en carregar la classificació",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // Ordenar por tiempo de completación (más rápido primero)
-    const sorted = entries.sort((a, b) => {
-      if (!a.hackathonTime) return 1;
-      if (!b.hackathonTime) return -1;
-      return a.hackathonTime.localeCompare(b.hackathonTime);
-    });
-    
-    // Asignar posiciones
-    const ranked = sorted.map((entry, index) => ({
-      ...entry,
-      rank: index + 1
-    }));
-
-    setLeaderboardData(ranked);
-  }, [userProgress]);
+    fetchLeaderboard();
+  }, [toast]);
 
   return (
     <section className="py-16 bg-cyber-darkgray">
@@ -67,7 +61,11 @@ const Leaderboard = () => {
           </div>
           
           <div className="cyber-container bg-cyber-black/80 border-cyber-green/40 p-4">
-            {leaderboardData.length > 0 ? (
+            {isLoading ? (
+              <div className="text-center py-10">
+                <div className="animate-pulse text-cyber-green">Carregant classificació...</div>
+              </div>
+            ) : leaderboardData.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow className="border-cyber-green/20">

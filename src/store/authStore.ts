@@ -2,69 +2,85 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useChallengeStore } from './challengeStore';
+import { authApi } from '@/services/api';
 
 interface User {
   username: string;
-  password: string;
+  isAdmin: boolean;
 }
 
 interface AuthState {
   currentUser: string | null;
-  users: User[];
   isAuthenticated: boolean;
   isAdmin: boolean;
-  login: (username: string, password: string) => boolean;
-  register: (username: string, password: string) => boolean;
-  logout: () => void;
+  login: (username: string, password: string) => Promise<boolean>;
+  register: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<boolean>;
+  checkSession: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       currentUser: null,
-      users: [],
       isAuthenticated: false,
       isAdmin: false,
       
-      login: (username: string, password: string) => {
-        const user = get().users.find(
-          u => u.username === username && u.password === password
-        );
+      login: async (username: string, password: string) => {
+        const response = await authApi.login(username, password);
         
-        if (user) {
+        if (response.success && response.data) {
           set({ 
-            currentUser: username, 
+            currentUser: response.data.username, 
             isAuthenticated: true,
-            isAdmin: username === 'admin' // Solo el usuario 'admin' tendrá permisos de administrador
+            isAdmin: response.data.isAdmin
           });
-          useChallengeStore.getState().setCurrentUser(username);
+          useChallengeStore.getState().setCurrentUser(response.data.username);
           return true;
         }
         
         return false;
       },
       
-      register: (username: string, password: string) => {
-        const userExists = get().users.some(u => u.username === username);
+      register: async (username: string, password: string) => {
+        const response = await authApi.register(username, password);
         
-        if (userExists) {
-          return false;
+        if (response.success && response.data) {
+          set({ 
+            currentUser: response.data.username, 
+            isAuthenticated: true,
+            isAdmin: response.data.isAdmin
+          });
+          useChallengeStore.getState().setCurrentUser(response.data.username);
+          return true;
         }
         
-        set(state => ({
-          users: [...state.users, { username, password }],
-          currentUser: username,
-          isAuthenticated: true,
-          isAdmin: username === 'admin'
-        }));
-        
-        useChallengeStore.getState().setCurrentUser(username);
-        return true;
+        return false;
       },
       
-      logout: () => {
-        set({ currentUser: null, isAuthenticated: false, isAdmin: false });
-        useChallengeStore.getState().setCurrentUser(null);
+      logout: async () => {
+        const response = await authApi.logout();
+        
+        if (response.success) {
+          set({ currentUser: null, isAuthenticated: false, isAdmin: false });
+          useChallengeStore.getState().setCurrentUser(null);
+          return true;
+        }
+        
+        return false;
+      },
+      
+      checkSession: async () => {
+        const response = await authApi.checkSession();
+        
+        if (response.success && response.data) {
+          set({ 
+            currentUser: response.data.username, 
+            isAuthenticated: true,
+            isAdmin: response.data.isAdmin
+          });
+          useChallengeStore.getState().setCurrentUser(response.data.username);
+        }
       }
     }),
     {
