@@ -19,5 +19,15 @@ export default defineConfig({
     assetsInlineLimit: 0,
     // Use relative paths for assets
     assetsDir: 'assets',
+    // Make sure the build works with PHP backend
+    chunkSizeWarningLimit: 1000,
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost',
+        changeOrigin: true,
+      }
+    }
+  }
 });

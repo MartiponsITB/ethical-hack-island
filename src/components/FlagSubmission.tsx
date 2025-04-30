@@ -20,7 +20,7 @@ const FlagSubmission = () => {
   const completedChallenges = getUserCompletedChallenges();
   const isCompleted = currentChallengeId ? completedChallenges.includes(currentChallengeId) : false;
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!isAuthenticated) {
@@ -34,12 +34,13 @@ const FlagSubmission = () => {
     
     setIsSubmitting(true);
     
-    // Validate the flag against our challenge store
-    const { isCorrect, challengeId } = validateFlag(flag);
-    
-    setTimeout(() => {
-      if (isCorrect) {
-        markChallengeCompleted(challengeId!);
+    try {
+      // Validate the flag against our challenge store
+      const result = await validateFlag(flag);
+      const { isCorrect, challengeId } = result;
+      
+      if (isCorrect && challengeId) {
+        await markChallengeCompleted(challengeId);
         
         toast({
           title: "Flag correcta!",
@@ -54,9 +55,16 @@ const FlagSubmission = () => {
           variant: "destructive",
         });
       }
-      
+    } catch (error) {
+      console.error("Error validating flag:", error);
+      toast({
+        title: "Error",
+        description: "Hi ha hagut un problema en validar la flag.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (

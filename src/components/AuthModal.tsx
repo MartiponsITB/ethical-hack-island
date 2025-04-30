@@ -40,7 +40,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
       let success = false;
       
       if (activeTab === "login") {
-        success = login(username, password);
+        success = await login(username, password);
         
         if (success) {
           toast({
@@ -57,7 +57,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
           });
         }
       } else {
-        success = register(username, password);
+        success = await register(username, password);
         
         if (success) {
           toast({

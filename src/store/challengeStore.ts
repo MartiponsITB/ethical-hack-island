@@ -1,7 +1,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { challengeApi } from '@/services/api';
+import { challengeApi, leaderboardApi } from '@/services/api';
 
 export interface Challenge {
   id: number;
