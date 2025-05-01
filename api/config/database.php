@@ -13,6 +13,9 @@ try {
     // Convert numeric values to native PHP numbers
     $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    
+    // Enable error logging for debugging
+    error_log("Database connection successful");
 } catch(PDOException $e) {
     // Log error to server log for debugging
     error_log("Database connection failed: " . $e->getMessage());

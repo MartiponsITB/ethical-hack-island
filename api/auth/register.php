@@ -33,7 +33,7 @@ if (strlen($password) < 6) {
 }
 
 try {
-    // Check if username already exists
+    // Check if username already exists (only check username, not password)
     $stmt = $db->prepare("SELECT id FROM users WHERE username = ?");
     $stmt->execute([$username]);
     

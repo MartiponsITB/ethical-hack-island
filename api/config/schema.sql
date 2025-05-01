@@ -41,7 +41,10 @@ CREATE TABLE IF NOT EXISTS `hackathon_progress` (
   CONSTRAINT `hackathon_progress_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Insert default challenge data
+-- Clear existing challenges data if any and insert updated flags
+DELETE FROM `challenges`;
+
+-- Insert updated challenge data with flags
 INSERT INTO `challenges` (`id`, `title`, `flag`) VALUES
 (1, 'Repte de Xarxes', '853212745123:)'),
 (2, 'Atac SQL', '849351789513'),
