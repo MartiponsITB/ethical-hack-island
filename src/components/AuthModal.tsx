@@ -75,6 +75,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
         }
       }
     } catch (error) {
+      console.error("Error during authentication:", error);
       toast({
         title: "Error",
         description: "Hi ha hagut un problema. Si us plau, torna-ho a provar.",

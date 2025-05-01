@@ -21,6 +21,23 @@ export default defineConfig({
     assetsDir: 'assets',
     // Make sure the build works with PHP backend
     chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        // Ensure asset paths are relative for PHP hosting
+        assetFileNames: 'assets/[name].[hash].[ext]',
+        chunkFileNames: 'assets/[name].[hash].js',
+        entryFileNames: 'assets/[name].[hash].js',
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: [
+            '@/components/ui/button',
+            '@/components/ui/card',
+            '@/components/ui/input',
+            '@/components/ui/toast',
+          ],
+        },
+      },
+    },
   },
   server: {
     proxy: {

@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Download, Terminal, Flag, CheckCircle2, AlertCircle, Server, Shield, Clock, Check, Lock } from "lucide-react";
 import { useChallengeStore } from "@/store/challengeStore";
 import { useAuthStore } from "@/store/authStore";
+import { useValidateFlag } from "@/hooks/useValidateFlag";
 
 const ChallengeDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,9 +18,9 @@ const ChallengeDetail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [timeLeft, setTimeLeft] = useState<string | null>(null);
   const { toast } = useToast();
+  const { validateFlagSafely, isValidating } = useValidateFlag();
   
   const { 
-    validateFlag, 
     markChallengeCompleted, 
     getUserCompletedChallenges, 
     isHackathonUnlocked,
@@ -65,6 +66,47 @@ const ChallengeDetail = () => {
     
     return () => clearInterval(timer);
   }, [isHackathon, hackathonUnlocked, isCompleted, getHackathonTimeLeft]);
+  
+  const handleSubmitFlag = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!isAuthenticated) {
+      toast({
+        title: "Inicia sessió primer",
+        description: "Cal iniciar sessió per enviar flags i desar el progrés.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (isHackathonLocked) {
+      toast({
+        title: "Repte bloquejat",
+        description: "Has de completar tots els reptes anteriors per desbloquejar el hackaton final.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const isCorrect = await validateFlagSafely(flag);
+      
+      if (isCorrect) {
+        setFlag("");
+      }
+    } catch (error) {
+      console.error("Error validating flag:", error);
+      toast({
+        title: "Error",
+        description: "Hi ha hagut un problema en validar la flag.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   
   const challenges = {
     1: {
@@ -154,59 +196,6 @@ const ChallengeDetail = () => {
   };
   
   const challenge = challenges[challengeId as keyof typeof challenges] || challenges[1];
-  
-  const handleSubmitFlag = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!isAuthenticated) {
-      toast({
-        title: "Inicia sessió primer",
-        description: "Cal iniciar sessió per enviar flags i desar el progrés.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (isHackathonLocked) {
-      toast({
-        title: "Repte bloquejat",
-        description: "Has de completar tots els reptes anteriors per desbloquejar el hackaton final.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsSubmitting(true);
-    
-    const { isCorrect, challengeId: validatedChallengeId } = validateFlag(flag);
-    
-    setTimeout(() => {
-      if (isCorrect && validatedChallengeId === challengeId) {
-        markChallengeCompleted(validatedChallengeId);
-        
-        toast({
-          title: "Flag correcta!",
-          description: "Has completat el repte amb èxit!",
-          className: "border-green-500 bg-green-500/10",
-        });
-        setFlag("");
-      } else if (isCorrect && validatedChallengeId !== challengeId) {
-        toast({
-          title: "Flag correcta però per un altre repte!",
-          description: "Aquesta flag és vàlida, però pertany a un altre repte.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Flag incorrecta",
-          description: "La flag introduïda no és vàlida. Torna a provar.",
-          variant: "destructive",
-        });
-      }
-      
-      setIsSubmitting(false);
-    }, 1000);
-  };
   
   return (
     <div className="min-h-screen bg-cyber-black">

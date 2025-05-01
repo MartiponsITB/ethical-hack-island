@@ -7,12 +7,13 @@ import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useChallengeStore } from "@/store/challengeStore";
 import { useParams } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { useValidateFlag } from "@/hooks/useValidateFlag";
 
 const FlagSubmission = () => {
   const [flag, setFlag] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { validateFlag, markChallengeCompleted, getUserCompletedChallenges } = useChallengeStore();
+  const { validateFlagSafely, isValidating } = useValidateFlag();
+  const { getUserCompletedChallenges } = useChallengeStore();
   const { isAuthenticated } = useAuthStore();
   const { id } = useParams<{ id?: string }>();
   
@@ -32,38 +33,15 @@ const FlagSubmission = () => {
       return;
     }
     
-    setIsSubmitting(true);
-    
     try {
-      // Validate the flag against our challenge store
-      const result = await validateFlag(flag);
-      const { isCorrect, challengeId } = result;
+      // Validate the flag using our hook which handles the Promise correctly
+      const success = await validateFlagSafely(flag);
       
-      if (isCorrect && challengeId) {
-        await markChallengeCompleted(challengeId);
-        
-        toast({
-          title: "Flag correcta!",
-          description: "Has completat el repte amb èxit!",
-          className: "border-green-500 bg-green-500/10",
-        });
+      if (success) {
         setFlag("");
-      } else {
-        toast({
-          title: "Flag incorrecta",
-          description: "La flag introduïda no és vàlida. Torna a provar.",
-          variant: "destructive",
-        });
       }
     } catch (error) {
       console.error("Error validating flag:", error);
-      toast({
-        title: "Error",
-        description: "Hi ha hagut un problema en validar la flag.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -103,12 +81,12 @@ const FlagSubmission = () => {
             
             <Button 
               type="submit" 
-              disabled={(!flag && !isCompleted) || isSubmitting || isCompleted || !isAuthenticated}
+              disabled={(!flag && !isCompleted) || isValidating || isCompleted || !isAuthenticated}
               className={`w-full ${isCompleted ? 'bg-green-500' : 'bg-cyber-green'} text-cyber-black hover:${isCompleted ? 'bg-green-500/90' : 'bg-cyber-green/90'} font-mono py-6`}
             >
               {isCompleted 
                 ? "Repte Completat" 
-                : isSubmitting 
+                : isValidating 
                   ? "Verificant..." 
                   : !isAuthenticated 
                     ? "Inicia sessió per verificar" 

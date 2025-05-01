@@ -14,8 +14,13 @@ try {
     $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch(PDOException $e) {
+    // Log error to server log for debugging
+    error_log("Database connection failed: " . $e->getMessage());
+    
+    // Return proper JSON error response
+    header('Content-Type: application/json');
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Database connection failed: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'error' => 'Database connection failed']);
     exit;
 }
 ?>

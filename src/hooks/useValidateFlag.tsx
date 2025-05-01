@@ -11,6 +11,7 @@ export const useValidateFlag = () => {
   const validateFlagSafely = async (flag: string): Promise<boolean> => {
     setIsValidating(true);
     try {
+      // Wait for the Promise to resolve
       const result = await validateFlag(flag);
       const { isCorrect, challengeId } = result;
       
