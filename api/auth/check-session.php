@@ -6,6 +6,9 @@ require_once '../utils/functions.php';
 enableCors();
 startSecureSession();
 
+// Añadir debug log
+error_log("Check session called for: " . ($_SESSION['username'] ?? 'No session'));
+
 // Check if user is logged in
 if (!isset($_SESSION['user_id']) || empty($_SESSION['username'])) {
     sendJsonResponse(['success' => false, 'error' => 'Not authenticated'], 401);
@@ -33,6 +36,7 @@ try {
         ]
     ]);
 } catch (PDOException $e) {
-    sendJsonResponse(['success' => false, 'error' => 'Server error'], 500);
+    error_log("Session check error: " . $e->getMessage());
+    sendJsonResponse(['success' => false, 'error' => 'Server error: ' . $e->getMessage()], 500);
 }
 ?>

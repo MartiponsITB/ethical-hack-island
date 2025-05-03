@@ -2,11 +2,25 @@
 <?php
 // Enable CORS for development
 function enableCors() {
-    // Set CORS headers
-    header("Access-Control-Allow-Origin: http://localhost:5173"); // Update with your dev server
-    header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-    header("Access-Control-Allow-Headers: Content-Type");
-    header("Access-Control-Allow-Credentials: true");
+    // Get the requesting origin
+    $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+    
+    // List of allowed origins - add your domains here
+    $allowed_origins = [
+        'http://localhost', 
+        'http://localhost:5173',
+        'http://127.0.0.1',
+        'http://127.0.0.1:5173'
+    ];
+    
+    // Check if the origin is allowed
+    if (in_array($origin, $allowed_origins) || empty($origin)) {
+        // Set CORS headers
+        header("Access-Control-Allow-Origin: " . (!empty($origin) ? $origin : '*'));
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type");
+        header("Access-Control-Allow-Credentials: true");
+    }
 
     // Handle preflight requests
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -35,11 +49,15 @@ function startSecureSession() {
         ini_set('session.use_only_cookies', 1);
         ini_set('session.use_strict_mode', 1);
         
+        // Check if we're on localhost
+        $isLocalhost = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1']) || 
+                      strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost') !== false;
+        
         session_set_cookie_params([
             'lifetime' => 3600, // 1 hour
             'path' => '/',
             'domain' => '',
-            'secure' => true,  // Only send over HTTPS
+            'secure' => !$isLocalhost,  // Only require HTTPS if not on localhost
             'httponly' => true // Not accessible via JavaScript
         ]);
         

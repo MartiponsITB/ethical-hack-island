@@ -23,7 +23,7 @@ try {
     // Return proper JSON error response
     header('Content-Type: application/json');
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Database connection failed']);
+    echo json_encode(['success' => false, 'error' => 'Database connection failed: ' . $e->getMessage()]);
     exit;
 }
 ?>
