@@ -13,16 +13,29 @@ export const useValidateFlag = () => {
     try {
       // Wait for the Promise to resolve
       const result = await validateFlag(flag);
-      const { isCorrect, challengeId } = result;
+      console.log("Flag validation response:", result);
       
-      if (isCorrect && challengeId) {
-        await markChallengeCompleted(challengeId);
-        toast({
-          title: "Flag correcta!",
-          description: "Has completat el repte amb èxit!",
-          className: "border-green-500 bg-green-500/10",
-        });
-        return true;
+      if (result.isCorrect && result.challengeId) {
+        try {
+          console.log("Marking challenge as completed:", result.challengeId);
+          await markChallengeCompleted(result.challengeId);
+          console.log("Challenge marked as completed");
+          
+          toast({
+            title: "Flag correcta!",
+            description: "Has completat el repte amb èxit!",
+            className: "border-green-500 bg-green-500/10",
+          });
+          return true;
+        } catch (markError) {
+          console.error("Error marking challenge as completed:", markError);
+          toast({
+            title: "Error",
+            description: "La flag es correcta, però hi ha hagut un problema en desar el progrés.",
+            variant: "destructive",
+          });
+          return false;
+        }
       } else {
         toast({
           title: "Flag incorrecta",

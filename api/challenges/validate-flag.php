@@ -42,6 +42,9 @@ try {
     if ($challenge) {
         // Flag is valid, return the challenge ID
         error_log("Flag is valid. Challenge ID: " . $challenge['id']);
+        error_log("Referer: " . ($_SERVER['HTTP_REFERER'] ?? 'unknown'));
+        
+        // Send a clear JSON response with the challenge ID
         sendJsonResponse([
             'success' => true,
             'data' => [

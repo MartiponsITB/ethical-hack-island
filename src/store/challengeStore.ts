@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { challengeApi, leaderboardApi } from '@/services/api';
@@ -56,8 +55,12 @@ export const useChallengeStore = create<ChallengeState>()(
         const username = get().currentUser;
         if (!username) return;
 
+        console.log("Loading user progress for:", username);
         const response = await challengeApi.getUserProgress();
+        console.log("User progress response:", response);
+        
         if (response.success && response.data) {
+          console.log("Setting user progress:", response.data);
           set(state => ({
             userProgress: {
               ...state.userProgress,
@@ -68,14 +71,20 @@ export const useChallengeStore = create<ChallengeState>()(
               completed: response.data.completedChallenges.includes(challenge.id)
             }))
           }));
+        } else {
+          console.error("Failed to load user progress:", response.error);
         }
       },
 
       validateFlag: async (flag: string) => {
+        console.log("Validating flag:", flag);
         const response = await challengeApi.validateFlag(flag);
+        console.log("Validate flag response:", response);
+        
         if (response.success && response.data) {
           return response.data;
         }
+        console.error("Flag validation failed:", response.error);
         return { isCorrect: false, challengeId: null };
       },
 
@@ -83,11 +92,15 @@ export const useChallengeStore = create<ChallengeState>()(
         const username = get().currentUser;
         if (!username) return;
 
+        console.log("Marking challenge completed:", challengeId);
         const response = await challengeApi.markCompleted(challengeId);
+        console.log("Mark completed response:", response);
         
         if (response.success) {
           // Re-fetch user progress to get up-to-date data from server
           await get().loadUserProgress();
+        } else {
+          console.error("Failed to mark challenge as completed:", response.error);
         }
       },
 
@@ -202,6 +215,7 @@ if (typeof window !== 'undefined') {
   setTimeout(() => {
     const { currentUser } = useChallengeStore.getState();
     if (currentUser) {
+      console.log("Initializing user progress for:", currentUser);
       useChallengeStore.getState().loadUserProgress();
     }
   }, 100);

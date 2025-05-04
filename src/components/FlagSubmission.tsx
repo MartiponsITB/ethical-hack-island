@@ -13,7 +13,7 @@ const FlagSubmission = () => {
   const [flag, setFlag] = useState("");
   const { toast } = useToast();
   const { validateFlagSafely, isValidating } = useValidateFlag();
-  const { getUserCompletedChallenges } = useChallengeStore();
+  const { getUserCompletedChallenges, loadUserProgress } = useChallengeStore();
   const { isAuthenticated } = useAuthStore();
   const { id } = useParams<{ id?: string }>();
   
@@ -34,14 +34,23 @@ const FlagSubmission = () => {
     }
     
     try {
+      console.log("Submitting flag:", flag);
       // Validate the flag using our hook which handles the Promise correctly
       const success = await validateFlagSafely(flag);
+      console.log("Flag validation result:", success);
       
       if (success) {
         setFlag("");
+        // Reload user progress to update UI
+        await loadUserProgress();
       }
     } catch (error) {
       console.error("Error validating flag:", error);
+      toast({
+        title: "Error",
+        description: "Error al procesar la flag. Por favor, inténtalo de nuevo.",
+        variant: "destructive",
+      });
     }
   };
 
