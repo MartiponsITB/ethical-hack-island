@@ -62,6 +62,6 @@ try {
     }
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
-    sendJsonResponse(['success' => false, 'error' => 'Server error'], 500);
+    sendJsonResponse(['success' => false, 'error' => 'Server error: ' . $e->getMessage()], 500);
 }
 ?>
