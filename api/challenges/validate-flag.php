@@ -25,17 +25,11 @@ $flag = trim($data['flag']); // Trim flag to remove any whitespace
 
 try {
     // Debug information
+    error_log("User ID: " . $user['user_id'] . ", Username: " . $user['username']);
     error_log("Received flag: " . $flag);
     
-    // Get all challenge flags for debugging
-    $debug_stmt = $db->query("SELECT id, flag FROM challenges");
-    $debug_challenges = $debug_stmt->fetchAll();
-    foreach ($debug_challenges as $debug_challenge) {
-        error_log("Challenge ID: " . $debug_challenge['id'] . ", Flag: " . $debug_challenge['flag']);
-    }
-    
     // Check if the flag is valid with exact matching
-    $stmt = $db->prepare("SELECT id FROM challenges WHERE flag = ?");
+    $stmt = $db->prepare("SELECT id FROM challenges WHERE flag = ? COLLATE utf8mb4_bin");
     $stmt->execute([$flag]);
     $challenge = $stmt->fetch();
     
@@ -53,8 +47,25 @@ try {
             ]
         ]);
     } else {
-        // Flag is invalid
-        error_log("Flag is invalid: " . $flag);
+        // Try to find the closest flag to help with debugging
+        $stmt = $db->query("SELECT id, flag FROM challenges ORDER BY id");
+        $allFlags = $stmt->fetchAll();
+        
+        $closeMatches = [];
+        foreach ($allFlags as $challengeFlag) {
+            if (strcasecmp($flag, $challengeFlag['flag']) === 0) {
+                $closeMatches[] = "Challenge ID " . $challengeFlag['id'] . ": Case mismatch";
+            } elseif (str_replace([" ", "\t", "\n", "\r"], "", $flag) === str_replace([" ", "\t", "\n", "\r"], "", $challengeFlag['flag'])) {
+                $closeMatches[] = "Challenge ID " . $challengeFlag['id'] . ": Whitespace issue";
+            }
+        }
+        
+        if (!empty($closeMatches)) {
+            error_log("Flag is close but not exact: " . implode(", ", $closeMatches));
+        } else {
+            error_log("Flag is invalid: " . $flag);
+        }
+        
         sendJsonResponse([
             'success' => true,
             'data' => [

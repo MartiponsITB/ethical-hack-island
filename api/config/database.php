@@ -7,12 +7,14 @@ $username = 'root';      // MariaDB username
 $password = '';          // MariaDB password - Set this to your actual password in production
 
 try {
-    $db = new PDO("mysql:host=$host;dbname=$db_name;charset=utf8mb4", $username, $password);
-    // Set PDO to throw exceptions on error
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // Convert numeric values to native PHP numbers
-    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+    ];
+    
+    $db = new PDO("mysql:host=$host;dbname=$db_name;charset=utf8mb4", $username, $password, $options);
     
     // Enable error logging for debugging
     error_log("Database connection successful");

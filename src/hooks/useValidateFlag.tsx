@@ -5,12 +5,22 @@ import { useToast } from '@/components/ui/use-toast';
 
 export const useValidateFlag = () => {
   const [isValidating, setIsValidating] = useState(false);
-  const { validateFlag, markChallengeCompleted } = useChallengeStore();
+  const { validateFlag, markChallengeCompleted, loadUserProgress } = useChallengeStore();
   const { toast } = useToast();
 
   const validateFlagSafely = async (flag: string): Promise<boolean> => {
+    if (!flag.trim()) {
+      toast({
+        title: "Flag buida",
+        description: "Si us plau, introdueix una flag per validar.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    
     setIsValidating(true);
     try {
+      console.log("Sending flag for validation:", flag);
       // Wait for the Promise to resolve
       const result = await validateFlag(flag);
       console.log("Flag validation response:", result);
@@ -19,6 +29,9 @@ export const useValidateFlag = () => {
         try {
           console.log("Marking challenge as completed:", result.challengeId);
           await markChallengeCompleted(result.challengeId);
+          
+          // Refresh user progress to ensure UI is updated
+          await loadUserProgress();
           console.log("Challenge marked as completed");
           
           toast({
@@ -48,7 +61,7 @@ export const useValidateFlag = () => {
       console.error("Error validating flag:", error);
       toast({
         title: "Error",
-        description: "Hi ha hagut un problema en validar la flag.",
+        description: "Hi ha hagut un problema en validar la flag. Verifica la teva connexió.",
         variant: "destructive",
       });
       return false;

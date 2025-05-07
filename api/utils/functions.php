@@ -10,16 +10,19 @@ function enableCors() {
         'http://localhost', 
         'http://localhost:5173',
         'http://127.0.0.1',
-        'http://127.0.0.1:5173'
+        'http://127.0.0.1:5173',
+        'http://localhost:80',
+        'http://127.0.0.1:80'
     ];
     
-    // Check if the origin is allowed
+    // Check if the origin is allowed or if we should use wildcard
     if (in_array($origin, $allowed_origins) || empty($origin)) {
         // Set CORS headers
         header("Access-Control-Allow-Origin: " . (!empty($origin) ? $origin : '*'));
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
         header("Access-Control-Allow-Headers: Content-Type");
         header("Access-Control-Allow-Credentials: true");
+        header("Content-Type: application/json; charset=UTF-8");
     }
 
     // Handle preflight requests
@@ -32,14 +35,22 @@ function enableCors() {
 // Parse JSON request body
 function getRequestBody() {
     $json = file_get_contents('php://input');
-    return json_decode($json, true);
+    $data = json_decode($json, true);
+    
+    // If json_decode returns null, log the raw input for debugging
+    if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+        error_log("JSON decode error: " . json_last_error_msg());
+        error_log("Raw input: " . $json);
+    }
+    
+    return $data ?: [];
 }
 
 // Send JSON response
 function sendJsonResponse($data, $statusCode = 200) {
     http_response_code($statusCode);
-    header('Content-Type: application/json');
-    echo json_encode($data);
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
 
@@ -70,8 +81,11 @@ function requireAuth() {
     startSecureSession();
     
     if (!isset($_SESSION['user_id']) || empty($_SESSION['username'])) {
+        error_log("Authentication failed: No valid session found");
         sendJsonResponse(['success' => false, 'error' => 'Unauthorized'], 401);
     }
+    
+    error_log("User authenticated: " . $_SESSION['username']);
     
     return [
         'user_id' => $_SESSION['user_id'],

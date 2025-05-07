@@ -11,18 +11,22 @@ try {
     $db = new PDO("mysql:host=$host;charset=utf8mb4", $username, $password);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Create database if it doesn't exist
+    // Create database if it doesn't exist with proper collation
     $db->exec("CREATE DATABASE IF NOT EXISTS `$db_name` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     
     // Now connect to the database
     $db = new PDO("mysql:host=$host;dbname=$db_name;charset=utf8mb4", $username, $password);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
+    // Set proper collation for the connection
+    $db->exec("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
+    
     // Read and execute the SQL schema
     $sql = file_get_contents(__DIR__ . '/config/schema.sql');
     $db->exec($sql);
     
-    echo "Database setup completed successfully.";
+    echo "Database setup completed successfully.<br>";
+    echo "<a href='/'><button>Go to Application</button></a>";
     
 } catch (PDOException $e) {
     die("Database setup error: " . $e->getMessage());
